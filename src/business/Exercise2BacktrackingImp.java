@@ -45,6 +45,8 @@ public class Exercise2BacktrackingImp extends Backtracking {
         int[] x = new int[NUM_CENTERS];
         int k = 0;
 
+        //TODO control execution time
+
         if (marking) {
             Marking m = new Marking();
 
@@ -65,7 +67,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
         }
 
 
-        //show best solution
+        //TODO show best solution pretty
         System.out.println("Mejor configuración: ");
         System.out.println(Arrays.toString(bestConfig));
         System.out.println("Centros usados: " + bestCentersUsed);
@@ -102,7 +104,17 @@ public class Exercise2BacktrackingImp extends Backtracking {
 
             } else {
                 if (completable(x, k)) {
-                    backtracking(x, k + 1, m);
+
+                    if (this.pbmsc) {
+                        if (m.getCentersUsed() < bestCentersUsed) {
+                            backtracking(x, k + 1, m);
+                        } else {
+                            //PODA
+                        }
+                    } else {
+                        backtracking(x, k + 1, m);
+                    }
+
                 } else {
                     //PODA
                 }

@@ -18,7 +18,7 @@ public class Controller {
 
         Exercise2BacktrackingImp exercise2BacktrackingImp = new Exercise2BacktrackingImp();
 
-        exercise2BacktrackingImp.run(false, false);
+        exercise2BacktrackingImp.run(true, true);
 
 
     }
