@@ -6,7 +6,7 @@ public class Sailor {
 
     private int num_membership;
     private String name;
-    private int weight;
+    private double weight;
     private HashMap<ShipType, Integer> abilities = new HashMap<>();
     private int win_rate;
 
