@@ -10,7 +10,7 @@ import java.util.ArrayList;
 
 public class ShipReader {
 
-    private static final String SHIP_ROUTE = "datasets/boats/boatsXS.txt";
+    private static final String SHIP_ROUTE = "datasets/boats/boatsM.txt";
 
     public ArrayList<Ship> readAllShips(){
         String currentLine;

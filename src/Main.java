@@ -8,6 +8,5 @@ public class Main {
 
         Controller controller = new Controller(menu);
         controller.run();
-
     }
 }

@@ -15,6 +15,10 @@ public class Exercise2BacktrackingImp extends Backtracking {
     private ArrayList<Center> centers = new ArrayList<>();
     private int NUM_CENTERS;
 
+    private int[] bestConfig;
+    private int bestCentersUsed;
+
+
     @Override
     public void run() {
         //READ SHIPS
@@ -28,11 +32,19 @@ public class Exercise2BacktrackingImp extends Backtracking {
 
         NUM_CENTERS = centers.size();
 
+        bestCentersUsed = NUM_CENTERS;
+
         //init basic configuration
         int[] x = new int[NUM_CENTERS];
         int k = 0;
 
         backtracking(x, k);
+
+        //show best solution
+
+        System.out.println("Mejor configuración: ");
+        System.out.println(Arrays.toString(bestConfig));
+        System.out.println("Centros usados: " + bestCentersUsed);
     }
 
     public void backtracking(int[] x, int k) {
@@ -44,9 +56,9 @@ public class Exercise2BacktrackingImp extends Backtracking {
 
             if (solution(x, k)) {
                 if (feasible(x)) {
-                    //TODO mostrar solucion bonita / optimización (tratarSolucion)
+                    //System.out.println(Arrays.toString(x));
 
-                    System.out.println(Arrays.toString(x));
+                    treatSolution(x);
 
                 } else {
                     //SOLUCION incorrecta
@@ -96,7 +108,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
         counterTypes.put(ShipType.Windsurf, 0);
         counterTypes.put(ShipType.Optimist, 0);
         counterTypes.put(ShipType.Laser, 0);
-        counterTypes.put(ShipType.Pati_Catala, 0);
+        counterTypes.put(ShipType.PatiCatala, 0);
         counterTypes.put(ShipType.HobieDragoon, 0);
         counterTypes.put(ShipType.HobieCat, 0);
 
@@ -118,6 +130,24 @@ public class Exercise2BacktrackingImp extends Backtracking {
 
 
         return counter == counterTypes.size();
+    }
+
+
+    private void treatSolution(int[] x) {
+        int counter = 0;
+
+        for (int i = 0; i < NUM_CENTERS; i++) {
+
+            if(x[i] == 1){
+                counter++;
+            }
+        }
+
+        if(counter <= bestCentersUsed){
+            bestCentersUsed = counter;
+            bestConfig = Arrays.copyOf(x, NUM_CENTERS);
+        }
+
     }
 
 
