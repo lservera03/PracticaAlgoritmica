@@ -1,14 +1,14 @@
 import persistence.ShipReader;
+import presentation.Controller;
+import presentation.Menu;
 
 
 public class Main {
     public static void main(String[] args) {
+        Menu menu = new Menu();
 
-        ShipReader shipReader = new ShipReader();
-
-
-        shipReader.readAllShips();
-
+        Controller controller = new Controller(menu);
+        controller.run();
 
     }
 }

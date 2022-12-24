@@ -26,4 +26,44 @@ public class Ship {
         this.speed = speed;
         this.center = center;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public ShipType getType() {
+        return type;
+    }
+
+    public double getWeight() {
+        return weight;
+    }
+
+    public double getLength() {
+        return length;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public int getNumCompetitions() {
+        return numCompetitions;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public String getCenter() {
+        return center;
+    }
 }
