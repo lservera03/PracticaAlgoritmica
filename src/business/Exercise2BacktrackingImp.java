@@ -3,7 +3,9 @@ package business;
 import persistence.ShipReader;
 
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Exercise2BacktrackingImp extends Backtracking {
 
@@ -25,6 +27,12 @@ public class Exercise2BacktrackingImp extends Backtracking {
         createCentersArray();
 
         NUM_CENTERS = centers.size();
+
+        //init basic configuration
+        int[] x = new int[NUM_CENTERS];
+        int k = 0;
+
+        backtracking(x, k);
     }
 
     public void backtracking(int[] x, int k) {
@@ -36,7 +44,10 @@ public class Exercise2BacktrackingImp extends Backtracking {
 
             if (solution(x, k)) {
                 if (feasible(x)) {
-                    //TODO mostrar solucion / optimización (tratarSolucion)
+                    //TODO mostrar solucion bonita / optimización (tratarSolucion)
+
+                    System.out.println(Arrays.toString(x));
+
                 } else {
                     //SOLUCION incorrecta
                 }
@@ -69,7 +80,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
 
     @Override
     public boolean solution(int[] x, int k) {
-        return k < NUM_CENTERS;
+        return k == (NUM_CENTERS - 1);
     }
 
     @Override
@@ -79,7 +90,34 @@ public class Exercise2BacktrackingImp extends Backtracking {
 
     @Override
     public boolean feasible(int[] x) {
-        return false;
+        Map<ShipType, Integer> counterTypes = new HashMap<>();
+        int counter = 0;
+
+        counterTypes.put(ShipType.Windsurf, 0);
+        counterTypes.put(ShipType.Optimist, 0);
+        counterTypes.put(ShipType.Laser, 0);
+        counterTypes.put(ShipType.Pati_Catala, 0);
+        counterTypes.put(ShipType.HobieDragoon, 0);
+        counterTypes.put(ShipType.HobieCat, 0);
+
+
+        for (int i = 0; i < NUM_CENTERS; i++) {
+
+            if (x[i] == 1) { //If the center is selected, check the types of its ships
+
+                for (Ship s : centers.get(i).getShips()) {
+
+                    if (counterTypes.get(s.getType()) == 0) {
+                        counter++;
+                    }
+                    counterTypes.put(s.getType(), counterTypes.get(s.getType()) + 1);
+
+                }
+            }
+        }
+
+
+        return counter == counterTypes.size();
     }
 
 

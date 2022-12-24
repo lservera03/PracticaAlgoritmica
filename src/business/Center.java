@@ -12,6 +12,9 @@ public class Center {
         this.name = name;
     }
 
+    public ArrayList<Ship> getShips() {
+        return ships;
+    }
 
     public void addShip(Ship s){
         this.ships.add(s);
