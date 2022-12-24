@@ -5,8 +5,8 @@ public class Ship {
     private int id;
     private String name;
     private ShipType type;
-    private int weight;
-    private int length;
+    private double weight;
+    private double length;
     private int capacity;
     private int numCompetitions;
     private String state;
@@ -14,7 +14,7 @@ public class Ship {
     private String center;
 
 
-    public Ship(int id, String name, ShipType type, int weight, int length, int capacity, int numCompetitions, String state, int speed, String center) {
+    public Ship(int id, String name, ShipType type, double weight, double length, int capacity, int numCompetitions, String state, int speed, String center) {
         this.id = id;
         this.name = name;
         this.type = type;
