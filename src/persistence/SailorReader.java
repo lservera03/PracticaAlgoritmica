@@ -1,8 +1,11 @@
 package persistence;
 
 import business.Sailor;
+import business.Ship;
+import business.ShipType;
 
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,19 +27,17 @@ public class SailorReader {
 
             while ((currentLine = reader.readLine()) != null) {
 
-                System.out.println(currentLine);
-
                 String[] split = currentLine.split(";");
 
-                //ships.add(new Ship());
+                sailors.add(new Sailor(Integer.parseInt(split[0]), split[1],
+                        Double.parseDouble(split[3]),ShipType.getEnumValue(split[2]),
+                        Integer.parseInt(split[4])
+                        ));
             }
-
             reader.close();
-
         } catch (IOException e) {
             e.printStackTrace();
         }
-
 
         return sailors;
     }
