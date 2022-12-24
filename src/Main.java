@@ -1,3 +1,4 @@
+import business.ShipType;
 import presentation.Controller;
 import presentation.Menu;
 

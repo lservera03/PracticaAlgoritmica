@@ -2,7 +2,7 @@ package business;
 
 public abstract class Backtracking {
 
-    public abstract void run();
+    public abstract void run(boolean marking, boolean pbmsc);
 
     public abstract void prepareLevelTour(int[] x, int k);
 
@@ -15,5 +15,7 @@ public abstract class Backtracking {
     public abstract boolean completable(int[] x, int k);
 
     public abstract boolean feasible(int[] x);
+
+    public abstract void treatSolution(int[] x);
 
 }

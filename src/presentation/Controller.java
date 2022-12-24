@@ -11,21 +11,17 @@ public class Controller {
         this.menu = menu;
     }
 
-    public void run(){
+    public void run() {
 
 
         //TODO show menu
 
         Exercise2BacktrackingImp exercise2BacktrackingImp = new Exercise2BacktrackingImp();
 
-        exercise2BacktrackingImp.run();
-
-
-
+        exercise2BacktrackingImp.run(false, false);
 
 
     }
-
 
 
 }

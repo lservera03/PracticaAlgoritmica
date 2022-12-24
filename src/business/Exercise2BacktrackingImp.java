@@ -19,8 +19,15 @@ public class Exercise2BacktrackingImp extends Backtracking {
     private int bestCentersUsed;
 
 
+    private boolean marking;
+    private boolean pbmsc;
+
     @Override
-    public void run() {
+    public void run(boolean marking, boolean pbmsc) {
+
+        this.marking = marking;
+        this.pbmsc = pbmsc;
+
         //READ SHIPS
         ShipReader shipReader = new ShipReader();
         ships = shipReader.readAllShips();
@@ -38,37 +45,71 @@ public class Exercise2BacktrackingImp extends Backtracking {
         int[] x = new int[NUM_CENTERS];
         int k = 0;
 
-        backtracking(x, k);
+        if (marking) {
+            Marking m = new Marking();
+
+            Map<ShipType, Integer> counterTypes = new HashMap<>();
+
+            counterTypes.put(ShipType.Windsurf, 0);
+            counterTypes.put(ShipType.Optimist, 0);
+            counterTypes.put(ShipType.Laser, 0);
+            counterTypes.put(ShipType.PatiCatala, 0);
+            counterTypes.put(ShipType.HobieDragoon, 0);
+            counterTypes.put(ShipType.HobieCat, 0);
+
+            m.setTypes(counterTypes);
+
+            backtracking(x, k, m);
+        } else {
+            backtracking(x, k, null);
+        }
+
 
         //show best solution
-
         System.out.println("Mejor configuración: ");
         System.out.println(Arrays.toString(bestConfig));
         System.out.println("Centros usados: " + bestCentersUsed);
     }
 
-    public void backtracking(int[] x, int k) {
+    public void backtracking(int[] x, int k, Marking m) {
 
         prepareLevelTour(x, k);
 
         while (isThereSuccessor(x, k)) {
             nextBrother(x, k);
 
-            if (solution(x, k)) {
-                if (feasible(x)) {
-                    //System.out.println(Arrays.toString(x));
+            if (this.marking) {
+                mark(x, k, m);
+            }
 
-                    treatSolution(x);
+            if (solution(x, k)) {
+                if (this.marking) {
+
+                    if (markedFeasible(x, m)) {
+                        markedTreatSolution(x, m);
+                    } else {
+                        //INCORRECT SOLUTION
+                    }
 
                 } else {
-                    //SOLUCION incorrecta
+                    if (feasible(x)) {
+                        treatSolution(x);
+
+                    } else {
+                        //INCORRECT SOLUTION
+                    }
                 }
+
             } else {
                 if (completable(x, k)) {
-                    backtracking(x, k + 1);
+                    backtracking(x, k + 1, m);
                 } else {
                     //PODA
                 }
+            }
+
+            if (this.marking) {
+                unMark(x, k, m);
             }
 
         }
@@ -133,18 +174,33 @@ public class Exercise2BacktrackingImp extends Backtracking {
     }
 
 
-    private void treatSolution(int[] x) {
+    private boolean markedFeasible(int[] x, Marking m) {
+        return m.getNumTypes() == m.getTypes().size();
+    }
+
+
+    public void treatSolution(int[] x) {
         int counter = 0;
 
         for (int i = 0; i < NUM_CENTERS; i++) {
 
-            if(x[i] == 1){
+            if (x[i] == 1) {
                 counter++;
             }
         }
 
-        if(counter <= bestCentersUsed){
+        if (counter <= bestCentersUsed) {
             bestCentersUsed = counter;
+            bestConfig = Arrays.copyOf(x, NUM_CENTERS);
+        }
+
+    }
+
+
+    public void markedTreatSolution(int[] x, Marking m) {
+
+        if (m.getCentersUsed() <= bestCentersUsed) {
+            bestCentersUsed = m.getCentersUsed();
             bestConfig = Arrays.copyOf(x, NUM_CENTERS);
         }
 
@@ -171,4 +227,94 @@ public class Exercise2BacktrackingImp extends Backtracking {
     }
 
 
+    private void mark(int[] x, int k, Marking m) {
+
+        if (x[k] == 1) {
+            m.addCentersUsed();
+
+            for (Ship s : centers.get(k).getShips()) {
+
+                m.addType(s.getType());
+
+                if (m.getTypes().get(s.getType()) == 1) {
+                    m.addNumType();
+                }
+            }
+        }
+
+    }
+
+    private void unMark(int[] x, int k, Marking m) {
+
+        if (x[k] == 1) {
+            m.subtractCentersUsed();
+
+            for (Ship s : centers.get(k).getShips()) {
+
+                if (m.getTypes().get(s.getType()) > 0) {
+                    m.subtractType(s.getType());
+                }
+
+                if (m.getTypes().get(s.getType()) == 0) {
+                    m.subtractNumType();
+                }
+
+            }
+
+        }
+
+    }
+
+
 }
+
+
+class Marking {
+
+    private Map<ShipType, Integer> types = new HashMap<>();
+    private int numTypes = 0;
+    private int centersUsed = 0;
+
+
+    public void addType(ShipType type) {
+        this.types.put(type, this.types.get(type) + 1);
+    }
+
+    public void subtractType(ShipType type) {
+        this.types.put(type, this.types.get(type) - 1);
+    }
+
+    public void addNumType() {
+        this.numTypes++;
+    }
+
+    public void subtractNumType() {
+        this.numTypes--;
+    }
+
+    public void addCentersUsed() {
+        this.centersUsed++;
+    }
+
+    public void subtractCentersUsed() {
+        this.centersUsed--;
+    }
+
+    public Map<ShipType, Integer> getTypes() {
+        return types;
+    }
+
+    public int getNumTypes() {
+        return numTypes;
+    }
+
+    public int getCentersUsed() {
+        return centersUsed;
+    }
+
+    public void setTypes(Map<ShipType, Integer> types) {
+        this.types = types;
+    }
+}
+
+
