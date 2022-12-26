@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class Exercise2BacktrackingImp extends Backtracking {
 
@@ -45,7 +46,9 @@ public class Exercise2BacktrackingImp extends Backtracking {
         int[] x = new int[NUM_CENTERS];
         int k = 0;
 
-        //TODO start execution watch
+        //start execution watch
+        long start = System.nanoTime();
+
 
         if (marking) {
             Marking m = new Marking();
@@ -66,8 +69,11 @@ public class Exercise2BacktrackingImp extends Backtracking {
             backtracking(x, k, null);
         }
 
-        //TODO stop execution watch
+        //stop execution watch
+        long end = System.nanoTime();
+        long elapsedTime = end - start;
 
+        System.out.println("Time used: " + elapsedTime + " nanoseconds");
 
         //TODO show best solution pretty
         System.out.println("Mejor configuración: ");
@@ -87,7 +93,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
             }
 
             if (solution(x, k)) {
-                if (this.marking) {
+                if (this.marking) { //MARKING
 
                     if (markedFeasible(x, m)) {
                         markedTreatSolution(x, m);
@@ -107,7 +113,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
             } else {
                 if (completable(x, k)) {
 
-                    if (this.pbmsc) {
+                    if (this.pbmsc) { //PBMSC
                         if (m.getCentersUsed() < bestCentersUsed) {
                             backtracking(x, k + 1, m);
                         } else {
