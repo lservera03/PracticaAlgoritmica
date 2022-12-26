@@ -45,7 +45,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
         int[] x = new int[NUM_CENTERS];
         int k = 0;
 
-        //TODO control execution time
+        //TODO start execution watch
 
         if (marking) {
             Marking m = new Marking();
@@ -65,6 +65,8 @@ public class Exercise2BacktrackingImp extends Backtracking {
         } else {
             backtracking(x, k, null);
         }
+
+        //TODO stop execution watch
 
 
         //TODO show best solution pretty
