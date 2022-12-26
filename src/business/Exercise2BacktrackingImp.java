@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public class Exercise2BacktrackingImp extends Backtracking {
 
@@ -20,14 +19,14 @@ public class Exercise2BacktrackingImp extends Backtracking {
     private int bestCentersUsed;
 
 
-    private boolean marking;
-    private boolean pbmsc;
+    private boolean isUsingMarking;
+    private boolean isUsingPbmsc;
 
     @Override
     public void run(boolean marking, boolean pbmsc) {
 
-        this.marking = marking;
-        this.pbmsc = pbmsc;
+        this.isUsingMarking = marking;
+        this.isUsingPbmsc = pbmsc;
 
         //READ SHIPS
         ShipReader shipReader = new ShipReader();
@@ -88,12 +87,12 @@ public class Exercise2BacktrackingImp extends Backtracking {
         while (isThereSuccessor(x, k)) {
             nextBrother(x, k);
 
-            if (this.marking) {
+            if (this.isUsingMarking) {
                 mark(x, k, m);
             }
 
             if (solution(x, k)) {
-                if (this.marking) { //MARKING
+                if (this.isUsingMarking) { //MARKING
 
                     if (markedFeasible(x, m)) {
                         markedTreatSolution(x, m);
@@ -113,7 +112,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
             } else {
                 if (completable(x, k)) {
 
-                    if (this.pbmsc) { //PBMSC
+                    if (this.isUsingPbmsc) { //PBMSC
                         if (m.getCentersUsed() < bestCentersUsed) {
                             backtracking(x, k + 1, m);
                         } else {
@@ -128,7 +127,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
                 }
             }
 
-            if (this.marking) {
+            if (this.isUsingMarking) {
                 unMark(x, k, m);
             }
 
