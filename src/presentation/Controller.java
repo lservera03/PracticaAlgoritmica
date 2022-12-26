@@ -1,5 +1,6 @@
 package presentation;
 
+import business.Exercise1BacktrackingImp;
 import business.Exercise2BacktrackingImp;
 
 public class Controller {
@@ -16,11 +17,15 @@ public class Controller {
 
         //TODO show menu
 
-        Exercise2BacktrackingImp exercise2BacktrackingImp = new Exercise2BacktrackingImp();
+        /**
+         Exercise2BacktrackingImp exercise2BacktrackingImp = new Exercise2BacktrackingImp();
 
-        exercise2BacktrackingImp.run(true, true);
+         exercise2BacktrackingImp.run(true, true);
+         **/
 
+        Exercise1BacktrackingImp exercise1BacktrackingImp = new Exercise1BacktrackingImp();
 
+        exercise1BacktrackingImp.run(false, false);
     }
 
 
