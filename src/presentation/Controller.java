@@ -2,6 +2,7 @@ package presentation;
 
 import business.Exercise1BacktrackingImp;
 import business.Exercise2BacktrackingImp;
+import business.Exercise2BranchAndBoundImp;
 
 public class Controller {
 
@@ -17,15 +18,25 @@ public class Controller {
 
         //TODO show menu
 
-        /**
-         Exercise2BacktrackingImp exercise2BacktrackingImp = new Exercise2BacktrackingImp();
+        System.out.println("Backtracking");
 
-         exercise2BacktrackingImp.run(true, true);
+        Exercise2BacktrackingImp exercise2BacktrackingImp = new Exercise2BacktrackingImp();
+
+        exercise2BacktrackingImp.run(false, false);
+
+
+        /**
+         Exercise1BacktrackingImp exercise1BacktrackingImp = new Exercise1BacktrackingImp();
+
+         exercise1BacktrackingImp.run(false, false);
          **/
 
-        Exercise1BacktrackingImp exercise1BacktrackingImp = new Exercise1BacktrackingImp();
+        System.out.println("B&B");
 
-        exercise1BacktrackingImp.run(false, false);
+        Exercise2BranchAndBoundImp exercise2BranchAndBoundImp = new Exercise2BranchAndBoundImp();
+
+        exercise2BranchAndBoundImp.run();
+
     }
 
 
