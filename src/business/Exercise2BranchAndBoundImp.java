@@ -54,7 +54,7 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
         configuration = rootConfiguration();
 
         aliveNodes.add(new ConfigurationQueue((Exercise2Configuration) configuration, NUM_CENTERS));
-        bestCentersUsed = NUM_CENTERS;
+        bestCentersUsed = Integer.MAX_VALUE;
 
         while (!aliveNodes.isEmpty()) {
 
@@ -62,15 +62,15 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
             sons = expand(configuration);
 
-            for (int i = 0; i < sons.length; i++) {
+            for (Configuration son : sons) {
 
-                if (solution(sons[i])) {
+                if (solution(son)) {
 
-                    if (feasible(sons[i])) {
+                    if (feasible(son)) {
 
-                        if (value(sons[i]) < bestCentersUsed) {
-                            bestCentersUsed = value(sons[i]);
-                            bestConfiguration = new Exercise2Configuration((Exercise2Configuration) sons[i], NUM_CENTERS);
+                        if (value(son) < bestCentersUsed) {
+                            bestCentersUsed = value(son);
+                            bestConfiguration = new Exercise2Configuration((Exercise2Configuration) son, NUM_CENTERS);
                         }
 
                     } else {
@@ -79,10 +79,10 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
                 } else {
 
-                    if (completable(sons[i])) {
+                    if (completable(son)) {
 
-                        if (partialValue(sons[i]) < bestCentersUsed) {
-                            aliveNodes.add(new ConfigurationQueue((Exercise2Configuration) sons[i], estimatedValue(sons[i])));
+                        if (partialValue(son) < bestCentersUsed) {
+                            aliveNodes.add(new ConfigurationQueue((Exercise2Configuration) son, estimatedValue(son)));
                         }
 
                     } else {
