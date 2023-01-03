@@ -23,6 +23,25 @@ public class Menu {
 
     }
 
+    public void showPrincipalMenu(){
+        System.out.println("*************CatTheHobie*************");
+        System.out.println("1. Navegación de alta velocidad");
+        System.out.println("2. Flota al completo");
+        System.out.println("3. Salir");
+        System.out.println("*************************************");
+    }
+
+    public void showMenuExercise1(){
+
+    }
+
+    public void showMenuExercise2(){
+        System.out.println("***Backtracking vs Branch & Bound***");
+        System.out.println("1.Backtracking");
+        System.out.println("2.Branch & Bound ");
+        System.out.println("************************************");
+    }
+
     /**
      * Method that allows to show the Edition Management menu.
      */

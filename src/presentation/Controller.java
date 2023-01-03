@@ -14,15 +14,29 @@ public class Controller {
     }
 
     public void run() {
-
+        int option;
 
         //TODO show menu
+        do{
+            menu.showPrincipalMenu();
+            option = this.menu.askForInteger("Selecciona el ejercicio a realizar");
+            switch (option){
+                case 1:
+                    break;
+                case 2:
+                    this.menu.showMenuExercise2();
+                    exercise2(this.menu.askForInteger("Selecciona la opción para realizar el ejercicio"));
+                    break;
+                case 3:
+                    this.menu.showString("Saliendo....");
+                    break;
+                default:
+                    this.menu.showString("Esta opción no existe!!!");
+            }
+        }while(option != 3);
 
-        System.out.println("Backtracking");
+        //System.out.println("Backtracking");
 
-        Exercise2BacktrackingImp exercise2BacktrackingImp = new Exercise2BacktrackingImp();
-
-        exercise2BacktrackingImp.run(false, false);
 
 
         /**
@@ -31,12 +45,24 @@ public class Controller {
          exercise1BacktrackingImp.run(false, false);
          **/
 
-        System.out.println("B&B");
+        //System.out.println("B&B");
 
-        Exercise2BranchAndBoundImp exercise2BranchAndBoundImp = new Exercise2BranchAndBoundImp();
 
-        exercise2BranchAndBoundImp.run();
 
+    }
+
+    public void exercise2(int option){
+        switch (option) {
+            case 1 -> {
+                Exercise2BacktrackingImp exercise2BacktrackingImp = new Exercise2BacktrackingImp();
+                exercise2BacktrackingImp.run(false, false);
+            }
+            case 2 -> {
+                Exercise2BranchAndBoundImp exercise2BranchAndBoundImp = new Exercise2BranchAndBoundImp();
+                exercise2BranchAndBoundImp.run();
+            }
+            default -> this.menu.showString("Esta opción no existe");
+        }
     }
 
 
