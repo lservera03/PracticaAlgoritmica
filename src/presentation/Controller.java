@@ -16,7 +16,7 @@ public class Controller {
     public void run() {
         int option;
 
-        //TODO show menu
+        //show menu
         do{
             menu.showPrincipalMenu();
             option = this.menu.askForInteger("Selecciona el ejercicio a realizar");
@@ -35,27 +35,13 @@ public class Controller {
             }
         }while(option != 3);
 
-        //System.out.println("Backtracking");
-
-
-
-        /**
-         Exercise1BacktrackingImp exercise1BacktrackingImp = new Exercise1BacktrackingImp();
-
-         exercise1BacktrackingImp.run(false, false);
-         **/
-
-        //System.out.println("B&B");
-
-
-
     }
 
     public void exercise2(int option){
         switch (option) {
             case 1 -> {
                 Exercise2BacktrackingImp exercise2BacktrackingImp = new Exercise2BacktrackingImp();
-                exercise2BacktrackingImp.run(false, false);
+                exercise2BacktrackingImp.run(true, true);
             }
             case 2 -> {
                 Exercise2BranchAndBoundImp exercise2BranchAndBoundImp = new Exercise2BranchAndBoundImp();

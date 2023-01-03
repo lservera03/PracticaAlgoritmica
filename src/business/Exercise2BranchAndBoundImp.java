@@ -7,6 +7,7 @@ import java.util.*;
 public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
 
+    public static final int NUM_TYPES = 6;
     private ArrayList<Center> centers = new ArrayList<>();
     private int NUM_CENTERS;
 
@@ -66,9 +67,9 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
                 if (solution(son)) {
 
-                    if (feasible(son)) {
+                    if (feasibleMarking(son)) {
 
-                        if (value(son) < bestCentersUsed) {
+                        if (valueMarking(son) < bestCentersUsed) {
                             bestCentersUsed = value(son);
                             bestConfiguration = new Exercise2Configuration((Exercise2Configuration) son, NUM_CENTERS);
                         }
@@ -121,6 +122,40 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
             //set new position
             son.setPosition(previous.getK() + 1, i);
+
+            //Copiar valor marcaje
+            son.marking.centersUsed = previous.marking.centersUsed;
+
+            son.marking.typesUsed = new HashMap<>(previous.marking.typesUsed);
+
+            //son.marking.typesUsedCounter = previous.marking.typesUsedCounter;
+
+
+            //Marking
+            son.marking.centersUsed += i;
+
+            //update types used
+            if (i == 1) {
+
+                Center center = this.centers.get(previous.getK() + 1);
+
+                for (int j = 0; j < center.getShips().size(); j++) {
+                    son.marking.typesUsed.put(center.getShips().get(j).getType(), son.marking.typesUsed.get(center.getShips().get(j).getType()) + 1);
+                }
+
+            }
+
+            //types used counter
+            for (Map.Entry<ShipType, Integer> entry : son.marking.typesUsed.entrySet()) {
+                ShipType key = entry.getKey();
+                Integer value = entry.getValue();
+
+                if (value > 0) {
+                    son.marking.typesUsedCounter++;
+                }
+
+            }
+
         }
 
         return sons;
@@ -167,8 +202,15 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
             }
         }
 
-        return counter == counterTypes.size();
+        return counter == NUM_TYPES;
     }
+
+    public boolean feasibleMarking(Configuration configuration) {
+        Exercise2Configuration conf = (Exercise2Configuration) configuration;
+
+        return conf.marking.typesUsedCounter == NUM_TYPES;
+    }
+
 
     @Override
     public int value(Configuration configuration) {
@@ -186,14 +228,22 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
         return counter;
     }
 
+
+    public int valueMarking(Configuration configuration) {
+        Exercise2Configuration conf = (Exercise2Configuration) configuration;
+
+        return conf.marking.centersUsed;
+    }
+
+
     @Override
     public int partialValue(Configuration configuration) {
-        return value(configuration);
+        return valueMarking(configuration);
     }
 
     @Override
     public int estimatedValue(Configuration configuration) {
-        return (value(configuration) / (configuration.getK() + 1)) * (NUM_CENTERS - configuration.getK()); //Average centers used
+        return (valueMarking(configuration) / (configuration.getK() + 1)) * (NUM_CENTERS - configuration.getK() + 1); //Average centers used
     }
 
 
@@ -220,14 +270,44 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 }
 
 
+class Exercise2BAndBMarking {
+
+    int centersUsed;
+
+    Map<ShipType, Integer> typesUsed;
+
+    int typesUsedCounter;
+
+    public Exercise2BAndBMarking() {
+        this.centersUsed = 0;
+        this.typesUsedCounter = 0;
+        this.typesUsed = new HashMap<>();
+        this.fillTypesMap();
+    }
+
+    private void fillTypesMap() {
+        this.typesUsed.put(ShipType.Windsurf, 0);
+        this.typesUsed.put(ShipType.Optimist, 0);
+        this.typesUsed.put(ShipType.Laser, 0);
+        this.typesUsed.put(ShipType.PatiCatala, 0);
+        this.typesUsed.put(ShipType.HobieDragoon, 0);
+        this.typesUsed.put(ShipType.HobieCat, 0);
+    }
+
+}
+
+
 class Exercise2Configuration extends Configuration {
 
     private int[] centers;
+
+    Exercise2BAndBMarking marking;
 
 
     public Exercise2Configuration(int k, int num_centers) {
         super(k);
         this.centers = new int[num_centers];
+        this.marking = new Exercise2BAndBMarking();
     }
 
     public Exercise2Configuration(Exercise2Configuration exercise2Configuration, int num_centers) {
