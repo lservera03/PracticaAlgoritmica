@@ -77,7 +77,6 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
                         //DISCARD
                     }
 
-
                 } else {
 
                     if (completable(sons[i])) {
@@ -177,7 +176,7 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
         Exercise2Configuration conf = (Exercise2Configuration) configuration;
 
-        for (int i = 0; i < conf.getK(); i++) {
+        for (int i = 0; i <= conf.getK(); i++) {
 
             if (conf.getPosition(i) == 1) {
                 counter++;
