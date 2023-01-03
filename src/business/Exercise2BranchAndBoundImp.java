@@ -241,6 +241,7 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
         return valueMarking(configuration);
     }
 
+
     @Override
     public int estimatedValue(Configuration configuration) {
         return (valueMarking(configuration) / (configuration.getK() + 1)) * (NUM_CENTERS - configuration.getK() + 1); //Average centers used
