@@ -55,8 +55,8 @@ public class Controller {
         menu.showMenuExercise2Bactracking();
         int option = menu.askForInteger("Escoge como quieres realizar el ejercicio");
         switch (option) {
-            case 1 -> exercise2Bactracking(true, true);
-            case 2 -> exercise2Bactracking(false, false);
+            case 1 -> exercise2Bactracking(false, false);
+            case 2 -> exercise2Bactracking(true, true);
             default -> this.menu.showString("Esta opción no existe");
         }
     }

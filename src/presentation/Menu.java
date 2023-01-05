@@ -44,8 +44,8 @@ public class Menu {
 
     public void showMenuExercise2Bactracking(){
         System.out.println("************Backtracking************");
-        System.out.println("1.Con marcaje y PBMSC");
-        System.out.println("2.Sin marcaje y PBMSC");
+        System.out.println("1.Simple");
+        System.out.println("2.Con marcaje y PBMSC");
         System.out.println("************************************");
 
     }
