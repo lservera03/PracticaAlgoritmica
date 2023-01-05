@@ -42,19 +42,13 @@ public class Menu {
         System.out.println("************************************");
     }
 
-    /**
-     * Method that allows to show the Edition Management menu.
-     */
-    public void showEditionManagementMenu() {
-        System.out.println("\n\ta) Create Edition");
-        System.out.println("\tb) List Editions");
-        System.out.println("\tc) Duplicate Edition");
-        System.out.println("\td) Delete Edition");
-        System.out.println();
-        System.out.println("\te) Back");
-        System.out.println();
-    }
+    public void showMenuExercise2Bactracking(){
+        System.out.println("************Backtracking************");
+        System.out.println("1.Con marcaje y PBMSC");
+        System.out.println("2.Sin marcaje y PBMSC");
+        System.out.println("************************************");
 
+    }
     /**
      * Function that allows to ask for an Integer doing some checkings.
      *
