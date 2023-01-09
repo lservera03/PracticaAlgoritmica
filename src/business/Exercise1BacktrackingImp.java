@@ -17,12 +17,11 @@ public class Exercise1BacktrackingImp extends Backtracking {
     private int NUM_SAILORS;
 
     private int[] bestConfig;
-    private int bestAverageSpeed;
+    private double bestTotalSpeed;
 
     private boolean isUsingMarking;
     private boolean isUsingPbmsc;
 
-    private int executionCounter = 0;
 
 
     @Override
@@ -44,11 +43,14 @@ public class Exercise1BacktrackingImp extends Backtracking {
         int[] x = new int[NUM_SAILORS];
         int k = 0;
 
+        bestTotalSpeed = 0;
 
         backtracking(x, k);
 
 
-        //TODO show solution
+        //show solution
+        System.out.println("Mejor solucion: ");
+        System.out.println(Arrays.toString(x));
     }
 
 
@@ -62,17 +64,11 @@ public class Exercise1BacktrackingImp extends Backtracking {
 
             if (solution(x, k)) {
 
-                executionCounter++;
-
-                System.out.println("EJECUCION: " + executionCounter);
-
-                System.out.println(Arrays.toString(x));
-
                 if (feasible(x)) {
                     System.out.println("SOLUCION: ");
                     System.out.println(Arrays.toString(x));
 
-                    //TODO treat solution
+                    treatSolution(x);
                 } else {
                     //SOLUTION INCORRECT
                 }
@@ -147,6 +143,46 @@ public class Exercise1BacktrackingImp extends Backtracking {
 
     @Override
     public void treatSolution(int[] x) {
+        ArrayList<Sailor> sailorsByShip = new ArrayList<>();
+        double shipSpeed = 1;
+
+        double totalSpeed = 0;
+
+        for (int i = 0; i < NUM_SHIPS; i++) {
+
+            Ship ship = ships.get(i);
+
+            for (int j = 0; j < NUM_SAILORS; i++) {
+
+                if (x[j] == i) {
+                    sailorsByShip.add(sailors.get(j));
+                }
+            }
+
+            for (int y = 0; y < sailorsByShip.size(); y++) {
+
+                if (y == 0) {
+                    shipSpeed = sailorsByShip.get(y).getImpact(ship);
+                }
+
+                if (y != sailorsByShip.size() - 1) {
+                    shipSpeed = shipSpeed * sailorsByShip.get(y + 1).getImpact(ship);
+                }
+
+            }
+
+
+            shipSpeed = ship.getSpeed() * shipSpeed;
+
+            totalSpeed += shipSpeed;
+
+            shipSpeed = 1;
+        }
+
+        if (totalSpeed > bestTotalSpeed) {
+            bestTotalSpeed = totalSpeed;
+            bestConfig = Arrays.copyOf(x, NUM_SAILORS);
+        }
 
     }
 }
