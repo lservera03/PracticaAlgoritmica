@@ -23,7 +23,6 @@ public class Exercise1BacktrackingImp extends Backtracking {
     private boolean isUsingPbmsc;
 
 
-
     @Override
     public void run(boolean marking, boolean pbmsc) {
 
@@ -63,6 +62,8 @@ public class Exercise1BacktrackingImp extends Backtracking {
             nextBrother(x, k);
 
             if (solution(x, k)) {
+
+                System.out.println(Arrays.toString(x));
 
                 if (feasible(x)) {
                     System.out.println("SOLUCION: ");
@@ -108,6 +109,32 @@ public class Exercise1BacktrackingImp extends Backtracking {
 
     @Override
     public boolean completable(int[] x, int k) {
+        Map<Ship, Integer> counterSailors = new HashMap<>();
+
+        //Loop to create Hashmap
+        for (Ship s : ships) {
+            counterSailors.put(s, 0);
+        }
+
+        //loop to fill hashmap
+        for (int i = 0; i < k; i++) {
+            if (x[i] > -1) {
+                counterSailors.put(ships.get(x[i]), counterSailors.get(ships.get(x[i])) + 1);
+            }
+        }
+
+        //loop to check if all the ships have full capacity
+        for (Map.Entry<Ship, Integer> entry : counterSailors.entrySet()) {
+            Ship ship = entry.getKey();
+            Integer counter = entry.getValue();
+
+            if (ship.getCapacity() < counter) {
+                return false;
+            }
+
+        }
+
+
         return true;
     }
 
@@ -132,7 +159,7 @@ public class Exercise1BacktrackingImp extends Backtracking {
             Ship ship = entry.getKey();
             Integer counter = entry.getValue();
 
-            if (ship.getCapacity() != counter) {
+            if (ship.getCapacity() > counter) {
                 return false;
             }
 
