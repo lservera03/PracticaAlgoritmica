@@ -50,7 +50,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
 
 
         if (marking) {
-            Marking m = new Marking();
+            Exercise2BacktrackingMarking m = new Exercise2BacktrackingMarking();
 
             Map<ShipType, Integer> counterTypes = new HashMap<>();
 
@@ -80,7 +80,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
         System.out.println("Centros usados: " + bestCentersUsed);
     }
 
-    public void backtracking(int[] x, int k, Marking m) {
+    public void backtracking(int[] x, int k, Exercise2BacktrackingMarking m) {
 
         prepareLevelTour(x, k);
 
@@ -193,7 +193,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
     }
 
 
-    private boolean markedFeasible(int[] x, Marking m) {
+    private boolean markedFeasible(int[] x, Exercise2BacktrackingMarking m) {
         return m.getNumTypes() == m.getTypes().size();
     }
 
@@ -216,7 +216,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
     }
 
 
-    public void markedTreatSolution(int[] x, Marking m) {
+    public void markedTreatSolution(int[] x, Exercise2BacktrackingMarking m) {
 
         if (m.getCentersUsed() <= bestCentersUsed) {
             bestCentersUsed = m.getCentersUsed();
@@ -246,7 +246,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
     }
 
 
-    private void mark(int[] x, int k, Marking m) {
+    private void mark(int[] x, int k, Exercise2BacktrackingMarking m) {
 
         if (x[k] == 1) {
             m.addCentersUsed();
@@ -263,7 +263,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
 
     }
 
-    private void unMark(int[] x, int k, Marking m) {
+    private void unMark(int[] x, int k, Exercise2BacktrackingMarking m) {
 
         if (x[k] == 1) {
             m.subtractCentersUsed();
@@ -288,7 +288,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
 }
 
 
-class Marking {
+class Exercise2BacktrackingMarking {
 
     private Map<ShipType, Integer> types = new HashMap<>();
     private int numTypes = 0;
