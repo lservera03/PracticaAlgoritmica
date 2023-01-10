@@ -38,4 +38,11 @@ public class Sailor {
     }
 
 
+    public int getNum_membership() {
+        return num_membership;
+    }
+
+    public String getName() {
+        return name;
+    }
 }
