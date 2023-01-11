@@ -10,19 +10,6 @@ public class Menu {
     private Scanner sc;
 
 
-    /**
-     * Method that allows to show the main title of the application.
-     */
-    public void showTitle() {
-        System.out.println(" _____ _            _____      _       _      ");
-        System.out.println("/__   \\ |__   ___  /__   \\_ __(_) __ _| |___  ");
-        System.out.println("  / /\\/ '_ \\ / _ \\   / /\\/ '__| |/ _` | / __| ");
-        System.out.println(" / /  | | | |  __/  / /  | |  | | (_| | \\__ \\ ");
-        System.out.println(" \\/   |_| |_|\\___|  \\/   |_|  |_|\\__,_|_|___/ ");
-        System.out.println();
-
-    }
-
     public void showPrincipalMenu(){
         System.out.println("*************CatTheHobie*************");
         System.out.println("1. Navegación de alta velocidad");
@@ -35,20 +22,29 @@ public class Menu {
 
     }
 
-    public void showMenuExercise2(){
+    public void showMenuExercise(){
         System.out.println("***Backtracking vs Branch & Bound***");
         System.out.println("1.Backtracking");
         System.out.println("2.Branch & Bound ");
         System.out.println("************************************");
     }
 
-    public void showMenuExercise2Bactracking(){
+    public void showMenuExerciseBactracking(){
         System.out.println("************Backtracking************");
         System.out.println("1.Simple");
         System.out.println("2.Con marcaje y PBMSC");
         System.out.println("************************************");
 
     }
+
+    public void showMenuExerciseBranchAndBounds(){
+        System.out.println("***********Branch & Bound***********");
+        System.out.println("1.Simple");
+        System.out.println("2.Con marcaje y PBMSC");
+        System.out.println("************************************");
+
+    }
+
     /**
      * Function that allows to ask for an Integer doing some checkings.
      *
