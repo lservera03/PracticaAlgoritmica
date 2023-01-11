@@ -111,7 +111,7 @@ public class Exercise1BacktrackingImp extends Backtracking {
                     }
 
                 } else {
-                    if (feasible(x)) {
+                    if (feasible2(x)) {
                         System.out.println("SOLUCION: ");
                         System.out.println(Arrays.toString(x));
 
@@ -186,29 +186,71 @@ public class Exercise1BacktrackingImp extends Backtracking {
                     }
                 }
 
-                for (int y = 0; y < sailorsOfShip.size(); y++) {
+                if(!sailorsOfShip.isEmpty()){
+                    shipSpeed = sailorsOfShip.get(0).getImpact(ship);
 
-                    if (y == 0) {
-                        shipSpeed = sailorsOfShip.get(y).getImpact(ship);
+                    for (int y = 1; y < sailorsOfShip.size(); y++) { //Calculate ship speed
+                        shipSpeed = shipSpeed * sailorsOfShip.get(y).getImpact(ship);
                     }
 
-                    if (y != sailorsOfShip.size() - 1) {
-                        shipSpeed = shipSpeed * sailorsOfShip.get(y + 1).getImpact(ship);
-                    }
+                    shipSpeed = ship.getSpeed() * shipSpeed;
 
+                    totalSpeed += shipSpeed;
+
+                    sailorsOfShip.clear();
                 }
 
-
-                shipSpeed = ship.getSpeed() * shipSpeed;
-
-                totalSpeed += shipSpeed;
-
-                sailorsOfShip.clear();
-
-                shipSpeed = 1;
             }
 
             m.totalSpeed = totalSpeed;
+        }
+
+    }
+
+    private void mark2(int[] x, int k, Exercise1BacktrackingMarking m) {
+        ArrayList<Sailor> sailorsOfShip = new ArrayList<>();
+        double shipSpeed = 1;
+        double totalSpeed = 0;
+        boolean full = true;
+
+        if (x[k] != -1) { //If the sailor is assigned to a ship
+            m.sailorsByShip[x[k]] = m.sailorsByShip[x[k]] + 1; //sailor counter by ship
+
+            for (int i = 0; i < NUM_SHIPS && full; i++) {
+                if (m.sailorsByShip[i] != ships.get(i).getCapacity()) {
+                    full = false;
+                }
+            }
+
+            m.isAllShipsFull = full;
+
+            //save previous speed to unmark
+            previousSpeed = m.speeds[x[k]];
+
+            //update total speed
+            Ship ship = ships.get(x[k]);
+
+            for (int j = 0; j <= k; j++) {
+
+                if (x[j] == x[k]) {
+                    sailorsOfShip.add(sailors.get(j));
+                }
+            }
+
+            shipSpeed = sailorsOfShip.get(0).getImpact(ship);
+
+            for (int y = 1; y < sailorsOfShip.size(); y++) { //Calculate ship speed
+                shipSpeed = shipSpeed * sailorsOfShip.get(y).getImpact(ship);
+            }
+
+            shipSpeed = ship.getSpeed() * shipSpeed;
+
+            m.speeds[x[k]] = shipSpeed;
+
+            sailorsOfShip.clear();
+
+
+            m.totalSpeed = m.totalSpeed + shipSpeed;
         }
 
     }
@@ -220,6 +262,19 @@ public class Exercise1BacktrackingImp extends Backtracking {
             m.sailorsByShip[x[k]] = m.sailorsByShip[x[k]] - 1;
             m.isAllShipsFull = false;
             m.totalSpeed = previousSpeed;
+        }
+
+    }
+
+
+    private void unmark2(int[] x, int k, Exercise1BacktrackingMarking m) {
+
+        if (x[k] != -1) {
+            m.sailorsByShip[x[k]] = m.sailorsByShip[x[k]] - 1;
+            m.isAllShipsFull = false;
+            m.totalSpeed = m.totalSpeed - m.speeds[x[k]];
+            m.speeds[x[k]] = previousSpeed;
+            m.totalSpeed = m.totalSpeed + m.speeds[x[k]];
         }
 
     }
@@ -258,7 +313,6 @@ public class Exercise1BacktrackingImp extends Backtracking {
             if (x[i] == x[k]) {
                 counter++;
             }
-
         }
 
         return ships.get(x[k]).getCapacity() >= counter;
@@ -304,6 +358,27 @@ public class Exercise1BacktrackingImp extends Backtracking {
         return true;
     }
 
+    public boolean feasible2(int[] x) {
+        int[] sailorsByShip = new int[NUM_SHIPS];
+
+        Arrays.fill(sailorsByShip, 0);
+
+        for (int i = 0; i < NUM_SAILORS; i++) {
+            if (x[i] > -1) {
+                sailorsByShip[x[i]]++;
+            }
+        }
+
+        //loop to check if all the ships have full capacity
+        for (int i = 0; i < NUM_SHIPS; i++) {
+            if (ships.get(i).getCapacity() > sailorsByShip[i]) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public boolean markedFeasible(int[] x, Exercise1BacktrackingMarking m) {
         return m.isAllShipsFull;
     }
@@ -329,19 +404,14 @@ public class Exercise1BacktrackingImp extends Backtracking {
             shipSpeed = sailorsByShip.get(0).getImpact(ship);
 
             for (int y = 1; y < sailorsByShip.size(); y++) { //Calculate ship speed
-
                 shipSpeed = shipSpeed * sailorsByShip.get(y).getImpact(ship);
             }
 
-            System.out.println("");
-
             shipSpeed = ship.getSpeed() * shipSpeed;
 
-            totalSpeed += shipSpeed; //Acumulate ships speeds by configuration
+            totalSpeed += shipSpeed; //Accumulate ships speeds by configuration
 
             sailorsByShip.clear();
-
-            shipSpeed = 1;
         }
 
         System.out.println("Total speed: " + totalSpeed);
@@ -372,11 +442,15 @@ class Exercise1BacktrackingMarking {
 
     double totalSpeed;
 
+    double[] speeds;
+
     boolean isAllShipsFull;
 
 
     Exercise1BacktrackingMarking(int numShips) {
         sailorsByShip = new int[numShips];
+        speeds = new double[numShips];
+        Arrays.fill(speeds, 0.0);
         totalSpeed = 0;
         isAllShipsFull = false;
     }
