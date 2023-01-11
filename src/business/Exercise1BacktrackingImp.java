@@ -126,8 +126,8 @@ public class Exercise1BacktrackingImp extends Backtracking {
                 if (this.isUsingMarking) {
                     if (markedCompletable(x, k, m)) {
 
-                        if(this.isUsingPbmsc){ //PBSMC
-                            if(m.totalSpeed > bestTotalSpeed){
+                        if (this.isUsingPbmsc) { //PBSMC
+                            if (m.totalSpeed > bestTotalSpeed) {
                                 backtracking(x, k + 1, m);
                             }
 
@@ -326,22 +326,18 @@ public class Exercise1BacktrackingImp extends Backtracking {
                 }
             }
 
-            for (int y = 0; y < sailorsByShip.size(); y++) {
+            shipSpeed = sailorsByShip.get(0).getImpact(ship);
 
-                if (y == 0) {
-                    shipSpeed = sailorsByShip.get(y).getImpact(ship);
-                }
+            for (int y = 1; y < sailorsByShip.size(); y++) { //Calculate ship speed
 
-                if (y != sailorsByShip.size() - 1) {
-                    shipSpeed = shipSpeed * sailorsByShip.get(y + 1).getImpact(ship);
-                }
-
+                shipSpeed = shipSpeed * sailorsByShip.get(y).getImpact(ship);
             }
 
+            System.out.println("");
 
             shipSpeed = ship.getSpeed() * shipSpeed;
 
-            totalSpeed += shipSpeed;
+            totalSpeed += shipSpeed; //Acumulate ships speeds by configuration
 
             sailorsByShip.clear();
 

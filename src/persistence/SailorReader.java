@@ -42,7 +42,7 @@ public class SailorReader {
 
                 sailors.add(new Sailor(Integer.parseInt(split[0]), split[1],
                         Double.parseDouble(split[2]), types,
-                        Integer.parseInt(split[4])
+                        Integer.parseInt(split[9])
                         ));
             }
             reader.close();

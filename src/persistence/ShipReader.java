@@ -12,7 +12,7 @@ public class ShipReader {
 
     private static final String SHIP_ROUTE = "datasets/boats/boatsXS.txt";
 
-    public ArrayList<Ship> readAllShips(){
+    public ArrayList<Ship> readAllShips() {
         String currentLine;
         BufferedReader reader;
 
@@ -26,10 +26,12 @@ public class ShipReader {
             while ((currentLine = reader.readLine()) != null) {
                 String[] split = currentLine.split(";");
 
-                ships.add(new Ship(Integer.parseInt(split[0]), split[1],
-                        ShipType.getEnumValue(split[2]), Double.parseDouble(split[3]),
-                                Double.parseDouble(split[4]), Integer.parseInt(split[5]),
-                                        Integer.parseInt(split[6]), split[7], Integer.parseInt(split[8]), split[9]));
+                if (!split[7].equalsIgnoreCase("unavailable") && !split[7].equalsIgnoreCase("broken")) {
+                    ships.add(new Ship(Integer.parseInt(split[0]), split[1],
+                            ShipType.getEnumValue(split[2]), Double.parseDouble(split[3]),
+                            Double.parseDouble(split[4]), Integer.parseInt(split[5]),
+                            Integer.parseInt(split[6]), split[7], Integer.parseInt(split[8]), split[9]));
+                }
             }
 
             reader.close();
@@ -41,9 +43,6 @@ public class ShipReader {
 
         return ships;
     }
-
-
-
 
 
 }

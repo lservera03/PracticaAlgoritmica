@@ -19,22 +19,26 @@ public class Sailor {
     }
 
 
-    public double getImpact(Ship ship) {
+    public float getImpact(Ship ship) {
         return (getWeightImpact(ship) + getSkillImpact(ship)) / 2;
     }
 
 
-    private double getWeightImpact(Ship ship) {
-        return (100 - this.weight) / ship.getWeight();
+    private float getWeightImpact(Ship ship) {
+        return (float) ((100 - this.weight) / ship.getWeight());
     }
 
-    private double getSkillImpact(Ship ship) {
-        return (normalize(this.abilities.get(ship.getType())) + normalize(this.winRate)) / 2;
+    private float getSkillImpact(Ship ship) {
+        return (normalize10(this.abilities.get(ship.getType())) + normalize100(this.winRate)) / 2;
     }
 
 
-    private double normalize(double number) {
-        return number / 10;
+    private float normalize10(float number) {
+        return number / Float.parseFloat("10");
+    }
+
+    private float normalize100(float number) {
+        return number / Float.parseFloat("100");
     }
 
 
