@@ -70,14 +70,24 @@ public class Exercise2BacktrackingImp extends Backtracking {
 
         //stop execution watch
         long end = System.nanoTime();
-        long elapsedTime = end - start;
+        long elapsedTime = (end - start) / 100000;
 
-        System.out.println("Time used: " + elapsedTime + " nanoseconds");
+        System.out.println("Execution time: " + elapsedTime + " miliseconds");
 
-        //TODO show best solution pretty
-        System.out.println("Mejor configuración: ");
-        System.out.println(Arrays.toString(bestConfig));
-        System.out.println("Centros usados: " + bestCentersUsed);
+        if(bestConfig != null){
+            //show best solution pretty
+            System.out.println("Minimum centers used: " + bestCentersUsed);
+            System.out.println("Centers: ");
+            for(int i = 0; i < NUM_CENTERS; i++){
+                if(bestConfig[i] == 1){
+                    System.out.println(" - " + centers.get(i).getName());
+                }
+            }
+        } else {
+            System.out.println("There is not any solution!");
+        }
+
+        System.out.println();
     }
 
     public void backtracking(int[] x, int k, Exercise2BacktrackingMarking m) {

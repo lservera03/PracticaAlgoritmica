@@ -16,6 +16,8 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
     private int NUM_SHIPS;
 
 
+    private double bestCentersUsed;
+
     @Override
     public void run() {
 
@@ -35,19 +37,28 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
         Exercise2Configuration best = (Exercise2Configuration) BranchAndBound();
 
         long end = System.nanoTime();
-        long elapsedTime = end - start;
+        long elapsedTime = (end - start) / 100000;
 
-        System.out.println("Time used: " + elapsedTime + " nanoseconds");
+        System.out.println("Time used: " + elapsedTime + " miliseconds");
 
-        System.out.println("Best configuration: ");
-        System.out.println(Arrays.toString(best.getCenters()));
-        System.out.println("Centers used: " + value(best));
+        if(best != null){
+            System.out.println("Minimum centers used: " + (int) bestCentersUsed);
+            System.out.println("Centers: ");
+            for(int i = 0; i < NUM_CENTERS; i++){
+                if(best.getPosition(i) == 1){
+                    System.out.println(" - " + centers.get(i).getName());
+                }
+            }
+        } else {
+            System.out.println("There is not any solution!");
+        }
+
+        System.out.println();
     }
 
 
     public Configuration BranchAndBound() {
         Configuration configuration, bestConfiguration = null;
-        double bestCentersUsed;
         Configuration[] sons = new Configuration[2];
 
         PriorityQueue<Ex2ConfigurationQueue> aliveNodes = new PriorityQueue<>();

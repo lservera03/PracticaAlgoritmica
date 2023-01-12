@@ -20,4 +20,7 @@ public class Center {
         this.ships.add(s);
     }
 
+    public String getName() {
+        return name;
+    }
 }
