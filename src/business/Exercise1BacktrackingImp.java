@@ -92,7 +92,7 @@ public class Exercise1BacktrackingImp extends Backtracking {
             nextBrother(x, k);
 
             if (this.isUsingMarking) {
-                mark2(x, k, m);
+                mark(x, k, m);
             }
 
             System.out.println(Arrays.toString(x));
@@ -150,58 +150,15 @@ public class Exercise1BacktrackingImp extends Backtracking {
             }
 
             if (this.isUsingMarking) {
-                unmark2(x, k, m);
+                unmark(x, k, m);
             }
         }
 
     }
+
+
 
     private void mark(int[] x, int k, Exercise1BacktrackingMarking m) {
-        ArrayList<Sailor> sailorsOfShip = new ArrayList<>();
-        double shipSpeed = 1;
-        double totalSpeed = 0;
-        boolean full = true;
-
-        if (x[k] != -1) { //If the sailor is assigned to a ship
-            m.sailorsByShip[x[k]].sailors = m.sailorsByShip[x[k]].sailors + 1; //sailor counter by ship
-
-            //save previous speed to unmark
-            previousSpeed = m.totalSpeed;
-
-            //update total speed
-            for (int i = 0; i < NUM_SHIPS; i++) {
-
-                Ship ship = ships.get(i);
-
-                for (int j = 0; j <= k; j++) {
-
-                    if (x[j] == i) {
-                        sailorsOfShip.add(sailors.get(j));
-                    }
-                }
-
-                if (!sailorsOfShip.isEmpty()) {
-                    shipSpeed = sailorsOfShip.get(0).getImpact(ship);
-
-                    for (int y = 1; y < sailorsOfShip.size(); y++) { //Calculate ship speed
-                        shipSpeed = shipSpeed * sailorsOfShip.get(y).getImpact(ship);
-                    }
-
-                    shipSpeed = ship.getSpeed() * shipSpeed;
-
-                    totalSpeed += shipSpeed;
-
-                    sailorsOfShip.clear();
-                }
-
-            }
-
-            m.totalSpeed = totalSpeed;
-        }
-
-    }
-
-    private void mark2(int[] x, int k, Exercise1BacktrackingMarking m) {
         double shipSpeed = 1;
 
         if (x[k] != -1) { //If the sailor is assigned to a ship
@@ -241,17 +198,8 @@ public class Exercise1BacktrackingImp extends Backtracking {
     }
 
 
+
     private void unmark(int[] x, int k, Exercise1BacktrackingMarking m) {
-
-        if (x[k] != -1) {
-            m.sailorsByShip[x[k]].sailors = m.sailorsByShip[x[k]].sailors - 1;
-            m.totalSpeed = previousSpeed;
-        }
-
-    }
-
-
-    private void unmark2(int[] x, int k, Exercise1BacktrackingMarking m) {
         boolean lleno = false;
 
         if (x[k] != -1) {
