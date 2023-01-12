@@ -61,7 +61,7 @@ public class Exercise1BacktrackingImp extends Backtracking {
         System.out.println("Best config: ");
         System.out.println(Arrays.toString(bestConfig));
 
-        //TODO print pretty
+        // TODO print pretty
 
         for (int i = 0; i < NUM_SHIPS; i++) {
 
@@ -92,8 +92,10 @@ public class Exercise1BacktrackingImp extends Backtracking {
             nextBrother(x, k);
 
             if (this.isUsingMarking) {
-                mark(x, k, m);
+                mark2(x, k, m);
             }
+
+            System.out.println(Arrays.toString(x));
 
             if (solution(x, k)) {
 
@@ -148,7 +150,7 @@ public class Exercise1BacktrackingImp extends Backtracking {
             }
 
             if (this.isUsingMarking) {
-                unmark(x, k, m);
+                unmark2(x, k, m);
             }
         }
 
@@ -161,15 +163,7 @@ public class Exercise1BacktrackingImp extends Backtracking {
         boolean full = true;
 
         if (x[k] != -1) { //If the sailor is assigned to a ship
-            m.sailorsByShip[x[k]] = m.sailorsByShip[x[k]] + 1; //sailor counter by ship
-
-            for (int i = 0; i < NUM_SHIPS && full; i++) {
-                if (m.sailorsByShip[i] != ships.get(i).getCapacity()) {
-                    full = false;
-                }
-            }
-
-            m.isAllShipsFull = full;
+            m.sailorsByShip[x[k]].sailors = m.sailorsByShip[x[k]].sailors + 1; //sailor counter by ship
 
             //save previous speed to unmark
             previousSpeed = m.totalSpeed;
@@ -208,47 +202,38 @@ public class Exercise1BacktrackingImp extends Backtracking {
     }
 
     private void mark2(int[] x, int k, Exercise1BacktrackingMarking m) {
-        ArrayList<Sailor> sailorsOfShip = new ArrayList<>();
         double shipSpeed = 1;
-        double totalSpeed = 0;
-        boolean full = true;
 
         if (x[k] != -1) { //If the sailor is assigned to a ship
-            m.sailorsByShip[x[k]] = m.sailorsByShip[x[k]] + 1; //sailor counter by ship
+            m.sailorsByShip[x[k]].sailors = m.sailorsByShip[x[k]].sailors + 1; //sailor counter by ship
 
-            for (int i = 0; i < NUM_SHIPS && full; i++) {
-                if (m.sailorsByShip[i] != ships.get(i).getCapacity()) {
-                    full = false;
-                }
+            m.sailorsByShip[x[k]].isFull = ships.get(x[k]).getCapacity() <= m.sailorsByShip[x[k]].sailors;
+
+            if (m.sailorsByShip[x[k]].isFull && ships.get(x[k]).getCapacity() == m.sailorsByShip[x[k]].sailors) {
+                m.fullBoats++;
             }
 
-            m.isAllShipsFull = full;
-
             //save previous speed to unmark
-            previousSpeed = m.speeds[x[k]];
+            previousSpeed = m.sailorsByShip[x[k]].speed;
+
+            if (m.sailorsByShip[x[k]].speed != 0) {
+                m.totalSpeed = m.totalSpeed - previousSpeed;
+            }
 
             //update total speed
             Ship ship = ships.get(x[k]);
 
-            for (int j = 0; j <= k; j++) {
+            shipSpeed = sailors.get(k).getImpact(ship);
 
-                if (x[j] == x[k]) {
-                    sailorsOfShip.add(sailors.get(j));
+            for (int i = (k - 1); i >= 0; i--) {
+                if (x[i] == x[k]) {
+                    shipSpeed = shipSpeed * sailors.get(i).getImpact(ship);
                 }
-            }
-
-            shipSpeed = sailorsOfShip.get(0).getImpact(ship);
-
-            for (int y = 1; y < sailorsOfShip.size(); y++) { //Calculate ship speed
-                shipSpeed = shipSpeed * sailorsOfShip.get(y).getImpact(ship);
             }
 
             shipSpeed = ship.getSpeed() * shipSpeed;
 
-            m.speeds[x[k]] = shipSpeed;
-
-            sailorsOfShip.clear();
-
+            m.sailorsByShip[x[k]].speed = shipSpeed;
 
             m.totalSpeed = m.totalSpeed + shipSpeed;
         }
@@ -259,8 +244,7 @@ public class Exercise1BacktrackingImp extends Backtracking {
     private void unmark(int[] x, int k, Exercise1BacktrackingMarking m) {
 
         if (x[k] != -1) {
-            m.sailorsByShip[x[k]] = m.sailorsByShip[x[k]] - 1;
-            m.isAllShipsFull = false;
+            m.sailorsByShip[x[k]].sailors = m.sailorsByShip[x[k]].sailors - 1;
             m.totalSpeed = previousSpeed;
         }
 
@@ -268,13 +252,22 @@ public class Exercise1BacktrackingImp extends Backtracking {
 
 
     private void unmark2(int[] x, int k, Exercise1BacktrackingMarking m) {
+        boolean lleno = false;
 
         if (x[k] != -1) {
-            m.sailorsByShip[x[k]] = m.sailorsByShip[x[k]] - 1;
-            m.isAllShipsFull = false;
-            m.totalSpeed = m.totalSpeed - m.speeds[x[k]];
-            m.speeds[x[k]] = previousSpeed;
-            m.totalSpeed = m.totalSpeed + m.speeds[x[k]];
+            m.sailorsByShip[x[k]].sailors = m.sailorsByShip[x[k]].sailors - 1;
+            if(m.sailorsByShip[x[k]].isFull){
+                lleno = true;
+            }
+            if(m.sailorsByShip[x[k]].sailors < ships.get(x[k]).getCapacity()){
+                m.sailorsByShip[x[k]].isFull = false;
+                if(lleno){
+                    m.fullBoats--;
+                }
+            }
+            m.totalSpeed = m.totalSpeed - m.sailorsByShip[x[k]].speed;
+            m.sailorsByShip[x[k]].speed = previousSpeed;
+            m.totalSpeed = m.totalSpeed + m.sailorsByShip[x[k]].speed;
         }
 
     }
@@ -309,7 +302,6 @@ public class Exercise1BacktrackingImp extends Backtracking {
         }
 
         for (int i = 0; i <= k; i++) {
-
             if (x[i] == x[k]) {
                 counter++;
             }
@@ -324,14 +316,12 @@ public class Exercise1BacktrackingImp extends Backtracking {
             return true;
         }
 
-        return ships.get(x[k]).getCapacity() >= m.sailorsByShip[x[k]];
+        return ships.get(x[k]).getCapacity() >= m.sailorsByShip[x[k]].sailors;
     }
 
 
     public boolean feasible(int[] x) {
         int[] sailorsByShip = new int[NUM_SHIPS];
-
-        Arrays.fill(sailorsByShip, 0);
 
         for (int i = 0; i < NUM_SAILORS; i++) {
             if (x[i] > -1) {
@@ -350,7 +340,7 @@ public class Exercise1BacktrackingImp extends Backtracking {
     }
 
     public boolean markedFeasible(int[] x, Exercise1BacktrackingMarking m) {
-        return m.isAllShipsFull;
+        return m.fullBoats == NUM_SHIPS;
     }
 
     @Override
@@ -406,23 +396,41 @@ public class Exercise1BacktrackingImp extends Backtracking {
 }
 
 
+class ShipMarking {
+
+    int sailors;
+    double speed;
+
+    boolean isFull;
+
+    public ShipMarking() {
+        sailors = 0;
+        speed = 0.0;
+        isFull = false;
+
+    }
+}
+
+
 class Exercise1BacktrackingMarking {
 
-    int[] sailorsByShip;
+    ShipMarking[] sailorsByShip;
 
     double totalSpeed;
 
-    double[] speeds;
-
-    boolean isAllShipsFull;
+    int fullBoats;
 
 
     Exercise1BacktrackingMarking(int numShips) {
-        sailorsByShip = new int[numShips];
-        speeds = new double[numShips];
-        Arrays.fill(speeds, 0.0);
+        sailorsByShip = new ShipMarking[numShips];
+
+        for (int i = 0; i < numShips; i++) {
+            sailorsByShip[i] = new ShipMarking();
+        }
+
+        fullBoats = 0;
+
         totalSpeed = 0;
-        isAllShipsFull = false;
     }
 
 }
