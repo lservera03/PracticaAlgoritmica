@@ -1,6 +1,7 @@
 package presentation;
 
 import business.Exercise1BacktrackingImp;
+import business.Exercise1BranchAndBoundImp;
 import business.Exercise2BacktrackingImp;
 import business.Exercise2BranchAndBoundImp;
 
@@ -53,7 +54,7 @@ public class Controller {
         }
     }
 
-    public void exercise2Backtracking(){
+    public void exercise2Backtracking() {
         int option = this.menu.askForInteger("Selecciona la opción para realizar el ejercicio");
         switch (option) {
             case 1 -> {
@@ -76,13 +77,14 @@ public class Controller {
                 exercise1Backtracking();
             }
             case 2 -> {
-                //todo branch&bounds
+                Exercise1BranchAndBoundImp exercise1BranchAndBoundImp = new Exercise1BranchAndBoundImp();
+                exercise1BranchAndBoundImp.run();
             }
             default -> this.menu.showString("Esta opción no existe");
         }
     }
 
-    public void exercise1Backtracking(){
+    public void exercise1Backtracking() {
         int option = this.menu.askForInteger("Selecciona la opción para realizar el ejercicio");
         switch (option) {
             case 1 -> {

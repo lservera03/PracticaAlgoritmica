@@ -15,11 +15,11 @@ public abstract class BranchAndBound {
 
     public abstract boolean feasible(Configuration configuration);
 
-    public abstract int value(Configuration configuration);
+    public abstract double value(Configuration configuration);
 
-    public abstract int partialValue(Configuration configuration);
+    public abstract double partialValue(Configuration configuration);
 
-    public abstract int estimatedValue(Configuration configuration);
+    public abstract double estimatedValue(Configuration configuration);
 
 
 }

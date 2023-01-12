@@ -111,7 +111,7 @@ public class Exercise1BacktrackingImp extends Backtracking {
                     }
 
                 } else {
-                    if (feasible2(x)) {
+                    if (feasible(x)) {
                         System.out.println("SOLUCION: ");
                         System.out.println(Arrays.toString(x));
 
@@ -186,7 +186,7 @@ public class Exercise1BacktrackingImp extends Backtracking {
                     }
                 }
 
-                if(!sailorsOfShip.isEmpty()){
+                if (!sailorsOfShip.isEmpty()) {
                     shipSpeed = sailorsOfShip.get(0).getImpact(ship);
 
                     for (int y = 1; y < sailorsOfShip.size(); y++) { //Calculate ship speed
@@ -328,37 +328,7 @@ public class Exercise1BacktrackingImp extends Backtracking {
     }
 
 
-    @Override
     public boolean feasible(int[] x) {
-        Map<Ship, Integer> counterSailors = new HashMap<>();
-
-        //Loop to create Hashmap
-        for (Ship s : ships) {
-            counterSailors.put(s, 0);
-        }
-
-        //loop to fill hashmap
-        for (int i = 0; i < NUM_SAILORS; i++) {
-            if (x[i] > -1) {
-                counterSailors.put(ships.get(x[i]), counterSailors.get(ships.get(x[i])) + 1);
-            }
-        }
-
-        //loop to check if all the ships have full capacity
-        for (Map.Entry<Ship, Integer> entry : counterSailors.entrySet()) {
-            Ship ship = entry.getKey();
-            Integer counter = entry.getValue();
-
-            if (ship.getCapacity() > counter) {
-                return false;
-            }
-
-        }
-
-        return true;
-    }
-
-    public boolean feasible2(int[] x) {
         int[] sailorsByShip = new int[NUM_SHIPS];
 
         Arrays.fill(sailorsByShip, 0);

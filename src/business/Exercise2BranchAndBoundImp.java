@@ -47,14 +47,14 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
     public Configuration BranchAndBound() {
         Configuration configuration, bestConfiguration = null;
-        int bestCentersUsed;
+        double bestCentersUsed;
         Configuration[] sons = new Configuration[2];
 
-        PriorityQueue<ConfigurationQueue> aliveNodes = new PriorityQueue<>();
+        PriorityQueue<Ex2ConfigurationQueue> aliveNodes = new PriorityQueue<>();
 
         configuration = rootConfiguration();
 
-        aliveNodes.add(new ConfigurationQueue((Exercise2Configuration) configuration, NUM_CENTERS));
+        aliveNodes.add(new Ex2ConfigurationQueue((Exercise2Configuration) configuration, NUM_CENTERS));
         bestCentersUsed = Integer.MAX_VALUE;
 
         while (!aliveNodes.isEmpty()) {
@@ -83,7 +83,7 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
                     if (completable(son)) {
 
                         if (partialValue(son) < bestCentersUsed) {
-                            aliveNodes.add(new ConfigurationQueue((Exercise2Configuration) son, estimatedValue(son)));
+                            aliveNodes.add(new Ex2ConfigurationQueue((Exercise2Configuration) son, estimatedValue(son)));
                         }
 
                     } else {
@@ -213,7 +213,7 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
 
     @Override
-    public int value(Configuration configuration) {
+    public double value(Configuration configuration) {
         int counter = 0;
 
         Exercise2Configuration conf = (Exercise2Configuration) configuration;
@@ -237,13 +237,13 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
 
     @Override
-    public int partialValue(Configuration configuration) {
+    public double partialValue(Configuration configuration) {
         return valueMarking(configuration);
     }
 
 
     @Override
-    public int estimatedValue(Configuration configuration) {
+    public double estimatedValue(Configuration configuration) {
         return (valueMarking(configuration) / (configuration.getK() + 1)) * (NUM_CENTERS - configuration.getK() + 1); //Average centers used
     }
 
@@ -332,13 +332,13 @@ class Exercise2Configuration extends Configuration {
 }
 
 
-class ConfigurationQueue implements Comparable<ConfigurationQueue> {
+class Ex2ConfigurationQueue implements Comparable<Ex2ConfigurationQueue> {
 
     private Exercise2Configuration configuration;
-    private int score;
+    private double score;
 
 
-    public ConfigurationQueue(Exercise2Configuration configuration, int score) {
+    public Ex2ConfigurationQueue(Exercise2Configuration configuration, double score) {
         this.configuration = configuration;
         this.score = score;
     }
@@ -348,13 +348,13 @@ class ConfigurationQueue implements Comparable<ConfigurationQueue> {
         return configuration;
     }
 
-    public int getScore() {
+    public double getScore() {
         return score;
     }
 
     @Override
-    public int compareTo(ConfigurationQueue o) {
-        return Integer.compare(this.getScore(), o.getScore());
+    public int compareTo(Ex2ConfigurationQueue o) {
+        return Double.compare(this.getScore(), o.getScore());
     }
 }
 
