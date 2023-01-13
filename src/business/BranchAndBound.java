@@ -3,7 +3,7 @@ package business;
 public abstract class BranchAndBound {
 
 
-    public abstract void run();
+    public abstract void run(boolean marking);
 
     public abstract Configuration rootConfiguration();
 

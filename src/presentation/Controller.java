@@ -48,7 +48,7 @@ public class Controller {
             }
             case 2 -> {
                 Exercise2BranchAndBoundImp exercise2BranchAndBoundImp = new Exercise2BranchAndBoundImp();
-                exercise2BranchAndBoundImp.run();
+                exercise2BranchAndBoundImp.run(false);
             }
             default -> this.menu.showString("Esta opción no existe");
         }
@@ -78,7 +78,7 @@ public class Controller {
             }
             case 2 -> {
                 Exercise1BranchAndBoundImp exercise1BranchAndBoundImp = new Exercise1BranchAndBoundImp();
-                exercise1BranchAndBoundImp.run();
+                exercise1BranchAndBoundImp.run(true);
             }
             default -> this.menu.showString("Esta opción no existe");
         }

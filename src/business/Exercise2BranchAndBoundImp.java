@@ -19,7 +19,7 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
     private double bestCentersUsed;
 
     @Override
-    public void run() {
+    public void run(boolean marking) {
 
         //READ SHIPS
         ShipReader shipReader = new ShipReader();

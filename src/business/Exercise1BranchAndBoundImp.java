@@ -18,8 +18,10 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
 
     private double bestTotalSpeed;
 
+    private boolean isMarking;
+
     @Override
-    public void run() {
+    public void run(boolean marking) {
         ShipReader shipReader = new ShipReader();
         ships = shipReader.readAllShips();
         NUM_SHIPS = ships.size();
@@ -28,6 +30,7 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
         sailors = sailorReader.readAllSailors();
         NUM_SAILORS = sailors.size();
 
+        this.isMarking = marking;
 
         long start = System.nanoTime();
 
@@ -80,32 +83,55 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
 
                 if (solution(son)) {
 
-                    if (feasible(son)) {
+                    if (this.isMarking) {
+                        if (markedFeasible(son)) {
 
-                        if (value(son) > bestTotalSpeed) {
-                            bestTotalSpeed = value(son);
-                            bestConfiguration = new Exercise1Configuration((Exercise1Configuration) son, NUM_SAILORS);
+                            if (markedValue(son) > bestTotalSpeed) {
+                                bestTotalSpeed = value(son);
+                                bestConfiguration = new Exercise1Configuration((Exercise1Configuration) son, NUM_SAILORS);
+                            }
+
+                        } else {
+                            //DISCARD
                         }
-
                     } else {
-                        //DISCARD
+                        if (feasible(son)) {
+
+                            if (value(son) > bestTotalSpeed) {
+                                bestTotalSpeed = value(son);
+                                bestConfiguration = new Exercise1Configuration((Exercise1Configuration) son, NUM_SAILORS);
+                            }
+
+                        } else {
+                            //DISCARD
+                        }
                     }
 
+
                 } else {
+                    if (this.isMarking) {
+                        if (markedCompletable(son)) {
 
-                    if (completable(son)) {
+                            if (markedPartialValue(son) > bestTotalSpeed) {
+                                aliveNodes.add(new Ex1ConfigurationQueue((Exercise1Configuration) son, markedEstimatedValue(son)));
+                            }
 
-                        if (partialValue(son) > bestTotalSpeed) {
-                            aliveNodes.add(new Ex1ConfigurationQueue((Exercise1Configuration) son, estimatedValue(son)));
+                        } else {
+                            //DISCARD
                         }
-
                     } else {
-                        //DISCARD
+                        if (completable(son)) {
+
+                            if (partialValue(son) > bestTotalSpeed) {
+                                aliveNodes.add(new Ex1ConfigurationQueue((Exercise1Configuration) son, estimatedValue(son)));
+                            }
+
+                        } else {
+                            //DISCARD
+                        }
                     }
 
                 }
-
-
             }
 
         }
@@ -116,7 +142,7 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
 
     @Override
     public Configuration rootConfiguration() {
-        return new Exercise1Configuration(-1, NUM_SAILORS);
+        return new Exercise1Configuration(-1, NUM_SAILORS, NUM_SHIPS);
     }
 
     @Override
@@ -128,7 +154,7 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
             //Copy previous configuration
             Exercise1Configuration previous = (Exercise1Configuration) configuration;
 
-            sons[i + 1] = new Exercise1Configuration(previous.getK() + 1, NUM_SAILORS);
+            sons[i + 1] = new Exercise1Configuration(previous.getK() + 1, NUM_SAILORS, NUM_SHIPS);
             Exercise1Configuration son = (Exercise1Configuration) sons[i + 1];
 
 
@@ -138,6 +164,49 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
 
             //Generate new son
             son.setPosition(previous.getK() + 1, i);
+
+            //Marking
+            if (this.isMarking && i != -1) {
+                //Copy previous marking
+                son.marking.fullBoats = previous.marking.fullBoats;
+                son.marking.totalSpeed = previous.marking.totalSpeed;
+
+                for (int y = 0; y < NUM_SHIPS; y++) {
+                    son.marking.sailorsByShip[y] = new Ex1BAndBShipMarking(previous.marking.sailorsByShip[y]);
+                }
+
+
+                double shipSpeed = 1;
+
+                son.marking.sailorsByShip[i].sailors = son.marking.sailorsByShip[i].sailors + 1; //sailor counter by ship
+
+                son.marking.sailorsByShip[i].isFull = ships.get(i).getCapacity() <= son.marking.sailorsByShip[i].sailors;
+
+                if (son.marking.sailorsByShip[i].isFull && ships.get(i).getCapacity() == son.marking.sailorsByShip[i].sailors) {
+                    son.marking.fullBoats++;
+                }
+
+                if (son.marking.sailorsByShip[i].speed != 0) {
+                    son.marking.totalSpeed = son.marking.totalSpeed - son.marking.sailorsByShip[i].speed;
+                }
+
+                //update total speed
+                Ship ship = ships.get(i);
+
+                shipSpeed = sailors.get(son.getK()).getImpact(ship);
+
+                for (int j = (son.getK() - 1); j >= 0; j--) {
+                    if (son.getSailors()[j] == i) {
+                        shipSpeed = shipSpeed * sailors.get(j).getImpact(ship);
+                    }
+                }
+
+                shipSpeed = ship.getSpeed() * shipSpeed;
+
+                son.marking.sailorsByShip[i].speed = shipSpeed;
+
+                son.marking.totalSpeed = son.marking.totalSpeed + shipSpeed;
+            }
         }
 
 
@@ -169,6 +238,16 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
         return ships.get(conf.getPosition(conf.getK())).getCapacity() >= counter;
     }
 
+    public boolean markedCompletable(Configuration configuration) {
+        Exercise1Configuration conf = (Exercise1Configuration) configuration;
+
+        if (conf.getPosition(conf.getK()) == -1) {
+            return true;
+        }
+
+        return ships.get(conf.getPosition(conf.getK())).getCapacity() >= conf.marking.sailorsByShip[conf.getPosition(conf.getK())].sailors;
+    }
+
     @Override
     public boolean feasible(Configuration configuration) {
         int[] sailorsByShip = new int[NUM_SHIPS];
@@ -191,6 +270,12 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
         }
 
         return true;
+    }
+
+    public boolean markedFeasible(Configuration configuration) {
+        Exercise1Configuration conf = (Exercise1Configuration) configuration;
+
+        return conf.marking.fullBoats == NUM_SHIPS;
     }
 
     @Override
@@ -237,15 +322,78 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
         return totalSpeed;
     }
 
+    public double markedValue(Configuration configuration) {
+        Exercise1Configuration conf = (Exercise1Configuration) configuration;
+
+        return conf.marking.totalSpeed;
+    }
+
     @Override
     public double partialValue(Configuration configuration) {
         return value(configuration);
+    }
+
+    public double markedPartialValue(Configuration configuration) {
+        return markedValue(configuration);
     }
 
     @Override
     public double estimatedValue(Configuration configuration) {
         return (NUM_SAILORS - (configuration.getK() + 1)) / value(configuration);
     }
+
+
+    public double markedEstimatedValue(Configuration configuration) {
+        return (NUM_SAILORS - (configuration.getK() + 1)) / markedValue(configuration);
+    }
+
+}
+
+
+class Ex1BAndBShipMarking {
+
+    int sailors;
+    double speed;
+
+    boolean isFull;
+
+    public Ex1BAndBShipMarking() {
+        sailors = 0;
+        speed = 0.0;
+        isFull = false;
+    }
+
+    public Ex1BAndBShipMarking(Ex1BAndBShipMarking copy) {
+        this.sailors = copy.sailors;
+        this.speed = copy.speed;
+        this.isFull = copy.isFull;
+    }
+
+}
+
+
+class Exercise1BAndBMarking {
+
+    Ex1BAndBShipMarking[] sailorsByShip;
+
+    double totalSpeed;
+
+    int fullBoats;
+
+
+    Exercise1BAndBMarking(int numShips) {
+        sailorsByShip = new Ex1BAndBShipMarking[numShips];
+
+        for (int i = 0; i < numShips; i++) {
+            sailorsByShip[i] = new Ex1BAndBShipMarking();
+        }
+
+        fullBoats = 0;
+
+        totalSpeed = 0;
+    }
+
+
 }
 
 
@@ -253,10 +401,12 @@ class Exercise1Configuration extends Configuration {
 
     private int[] sailors;
 
+    Exercise1BAndBMarking marking;
 
-    public Exercise1Configuration(int k, int num_sailors) {
+    public Exercise1Configuration(int k, int num_sailors, int numShips) {
         super(k);
         this.sailors = new int[num_sailors];
+        this.marking = new Exercise1BAndBMarking(numShips);
     }
 
     public Exercise1Configuration(Exercise1Configuration exercise1Configuration, int num_centers) {
