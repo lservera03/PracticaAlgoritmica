@@ -170,7 +170,7 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
                 son.marking.typesUsed = new HashMap<>(previous.marking.typesUsed);
 
-                //son.marking.typesUsedCounter = previous.marking.typesUsedCounter;
+                son.marking.typesUsedCounter = previous.marking.typesUsedCounter;
 
 
                 //Marking
@@ -183,17 +183,9 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
                     for (int j = 0; j < center.getShips().size(); j++) {
                         son.marking.typesUsed.put(center.getShips().get(j).getType(), son.marking.typesUsed.get(center.getShips().get(j).getType()) + 1);
-                    }
-
-                }
-
-                //types used counter
-                for (Map.Entry<ShipType, Integer> entry : son.marking.typesUsed.entrySet()) {
-                    ShipType key = entry.getKey();
-                    Integer value = entry.getValue();
-
-                    if (value > 0) {
-                        son.marking.typesUsedCounter++;
+                        if (son.marking.typesUsed.get(center.getShips().get(j).getType()) == 1) {
+                            son.marking.typesUsedCounter++;
+                        }
                     }
 
                 }
