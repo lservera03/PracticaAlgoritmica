@@ -22,19 +22,16 @@ public class Controller {
             menu.showPrincipalMenu();
             option = this.menu.askForInteger("Selecciona el ejercicio a realizar");
             switch (option) {
-                case 1:
+                case 1 -> {
                     this.menu.showMenuExercise();
                     exercise1(this.menu.askForInteger("Selecciona la opción para realizar el ejercicio"));
-                    break;
-                case 2:
+                }
+                case 2 -> {
                     this.menu.showMenuExercise();
                     exercise2(this.menu.askForInteger("Selecciona la opción para realizar el ejercicio"));
-                    break;
-                case 3:
-                    this.menu.showString("Saliendo....");
-                    break;
-                default:
-                    this.menu.showString("Esta opción no existe!!!");
+                }
+                case 3 -> this.menu.showString("Saliendo....");
+                default -> this.menu.showString("Esta opción no existe!!!");
             }
         } while (option != 3);
 
@@ -47,8 +44,8 @@ public class Controller {
                 exercise2Backtracking();
             }
             case 2 -> {
-                Exercise2BranchAndBoundImp exercise2BranchAndBoundImp = new Exercise2BranchAndBoundImp();
-                exercise2BranchAndBoundImp.run(false);
+                this.menu.showMenuExerciseBranchAndBounds();
+                exercise2BranchAndBounds();
             }
             default -> this.menu.showString("Esta opción no existe");
         }
@@ -77,8 +74,8 @@ public class Controller {
                 exercise1Backtracking();
             }
             case 2 -> {
-                Exercise1BranchAndBoundImp exercise1BranchAndBoundImp = new Exercise1BranchAndBoundImp();
-                exercise1BranchAndBoundImp.run(true);
+                this.menu.showMenuExerciseBranchAndBounds();
+                exercise1BranchAndBounds();
             }
             default -> this.menu.showString("Esta opción no existe");
         }
@@ -94,6 +91,38 @@ public class Controller {
             case 2 -> {
                 Exercise1BacktrackingImp exercise1BacktrackingImp = new Exercise1BacktrackingImp();
                 exercise1BacktrackingImp.run(true, true);
+            }
+            default -> this.menu.showString("Esta opción no existe");
+        }
+    }
+
+    public void exercise1BranchAndBounds(){
+        int option = this.menu.askForInteger("Selecciona la opción para realizar el ejercicio");
+        switch (option) {
+            case 1 -> {
+                Exercise1BranchAndBoundImp exercise1BranchAndBoundImp = new Exercise1BranchAndBoundImp();
+                exercise1BranchAndBoundImp.run(false);
+            }
+            case 2 -> {
+                Exercise1BranchAndBoundImp exercise1BranchAndBoundImp = new Exercise1BranchAndBoundImp();
+                exercise1BranchAndBoundImp.run(true);
+            }
+            default -> this.menu.showString("Esta opción no existe");
+        }
+
+    }
+
+
+    public void exercise2BranchAndBounds(){
+        int option = this.menu.askForInteger("Selecciona la opción para realizar el ejercicio");
+        switch (option) {
+            case 1 -> {
+                Exercise2BranchAndBoundImp exercise2BranchAndBoundImp = new Exercise2BranchAndBoundImp();
+                exercise2BranchAndBoundImp.run(false);
+            }
+            case 2 -> {
+                Exercise2BranchAndBoundImp exercise2BranchAndBoundImp = new Exercise2BranchAndBoundImp();
+                exercise2BranchAndBoundImp.run(true);
             }
             default -> this.menu.showString("Esta opción no existe");
         }

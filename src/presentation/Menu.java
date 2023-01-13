@@ -40,7 +40,7 @@ public class Menu {
     public void showMenuExerciseBranchAndBounds(){
         System.out.println("***********Branch & Bound***********");
         System.out.println("1.Simple");
-        System.out.println("2.Con marcaje y PBMSC");
+        System.out.println("2.Con marcaje");
         System.out.println("************************************");
 
     }
