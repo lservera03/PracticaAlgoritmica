@@ -87,7 +87,7 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
                         if (markedFeasible(son)) {
 
                             if (markedValue(son) > bestTotalSpeed) {
-                                bestTotalSpeed = value(son);
+                                bestTotalSpeed = markedValue(son);
                                 bestConfiguration = new Exercise1Configuration((Exercise1Configuration) son, NUM_SAILORS);
                             }
 

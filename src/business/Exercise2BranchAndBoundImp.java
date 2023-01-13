@@ -15,11 +15,14 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
     private int NUM_SHIPS;
 
+    private boolean isMarking;
 
     private double bestCentersUsed;
 
     @Override
     public void run(boolean marking) {
+
+        this.isMarking = marking;
 
         //READ SHIPS
         ShipReader shipReader = new ShipReader();
@@ -41,11 +44,11 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
         System.out.println("Time used: " + elapsedTime + " miliseconds");
 
-        if(best != null){
+        if (best != null) {
             System.out.println("Minimum centers used: " + (int) bestCentersUsed);
             System.out.println("Centers: ");
-            for(int i = 0; i < NUM_CENTERS; i++){
-                if(best.getPosition(i) == 1){
+            for (int i = 0; i < NUM_CENTERS; i++) {
+                if (best.getPosition(i) == 1) {
                     System.out.println(" - " + centers.get(i).getName());
                 }
             }
@@ -78,28 +81,55 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
                 if (solution(son)) {
 
-                    if (feasibleMarking(son)) {
+                    if (this.isMarking) {
+                        if (feasibleMarking(son)) {
 
-                        if (valueMarking(son) < bestCentersUsed) {
-                            bestCentersUsed = value(son);
-                            bestConfiguration = new Exercise2Configuration((Exercise2Configuration) son, NUM_CENTERS);
+                            if (valueMarking(son) < bestCentersUsed) {
+                                bestCentersUsed = valueMarking(son);
+                                bestConfiguration = new Exercise2Configuration((Exercise2Configuration) son, NUM_CENTERS);
+                            }
+
+                        } else {
+                            //DISCARD
                         }
-
                     } else {
-                        //DISCARD
+                        if (feasible(son)) {
+
+                            if (value(son) < bestCentersUsed) {
+                                bestCentersUsed = value(son);
+                                bestConfiguration = new Exercise2Configuration((Exercise2Configuration) son, NUM_CENTERS);
+                            }
+
+                        } else {
+                            //DISCARD
+                        }
                     }
+
 
                 } else {
 
-                    if (completable(son)) {
+                    if (this.isMarking) {
+                        if (completable(son)) {
 
-                        if (partialValue(son) < bestCentersUsed) {
-                            aliveNodes.add(new Ex2ConfigurationQueue((Exercise2Configuration) son, estimatedValue(son)));
+                            if (markedPartialValue(son) < bestCentersUsed) {
+                                aliveNodes.add(new Ex2ConfigurationQueue((Exercise2Configuration) son, markedEstimatedValue(son)));
+                            }
+
+                        } else {
+                            //DISCARD
                         }
-
                     } else {
-                        //DISCARD
+                        if (completable(son)) {
+
+                            if (partialValue(son) < bestCentersUsed) {
+                                aliveNodes.add(new Ex2ConfigurationQueue((Exercise2Configuration) son, estimatedValue(son)));
+                            }
+
+                        } else {
+                            //DISCARD
+                        }
                     }
+
 
                 }
 
@@ -134,39 +164,40 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
             //set new position
             son.setPosition(previous.getK() + 1, i);
 
-            //Copiar valor marcaje
-            son.marking.centersUsed = previous.marking.centersUsed;
+            if (this.isMarking) {
+                //Copiar valor marcaje
+                son.marking.centersUsed = previous.marking.centersUsed;
 
-            son.marking.typesUsed = new HashMap<>(previous.marking.typesUsed);
+                son.marking.typesUsed = new HashMap<>(previous.marking.typesUsed);
 
-            //son.marking.typesUsedCounter = previous.marking.typesUsedCounter;
+                //son.marking.typesUsedCounter = previous.marking.typesUsedCounter;
 
 
-            //Marking
-            son.marking.centersUsed += i;
+                //Marking
+                son.marking.centersUsed += i;
 
-            //update types used
-            if (i == 1) {
+                //update types used
+                if (i == 1) {
 
-                Center center = this.centers.get(previous.getK() + 1);
+                    Center center = this.centers.get(previous.getK() + 1);
 
-                for (int j = 0; j < center.getShips().size(); j++) {
-                    son.marking.typesUsed.put(center.getShips().get(j).getType(), son.marking.typesUsed.get(center.getShips().get(j).getType()) + 1);
+                    for (int j = 0; j < center.getShips().size(); j++) {
+                        son.marking.typesUsed.put(center.getShips().get(j).getType(), son.marking.typesUsed.get(center.getShips().get(j).getType()) + 1);
+                    }
+
                 }
 
-            }
+                //types used counter
+                for (Map.Entry<ShipType, Integer> entry : son.marking.typesUsed.entrySet()) {
+                    ShipType key = entry.getKey();
+                    Integer value = entry.getValue();
 
-            //types used counter
-            for (Map.Entry<ShipType, Integer> entry : son.marking.typesUsed.entrySet()) {
-                ShipType key = entry.getKey();
-                Integer value = entry.getValue();
+                    if (value > 0) {
+                        son.marking.typesUsedCounter++;
+                    }
 
-                if (value > 0) {
-                    son.marking.typesUsedCounter++;
                 }
-
             }
-
         }
 
         return sons;
@@ -246,15 +277,22 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
         return conf.marking.centersUsed;
     }
 
+    public double markedPartialValue(Configuration configuration) {
+        return valueMarking(configuration);
+    }
 
     @Override
     public double partialValue(Configuration configuration) {
-        return valueMarking(configuration);
+        return value(configuration);
     }
 
 
     @Override
     public double estimatedValue(Configuration configuration) {
+        return (value(configuration) / (configuration.getK() + 1)) * (NUM_CENTERS - configuration.getK() + 1); //Average centers used
+    }
+
+    public double markedEstimatedValue(Configuration configuration) {
         return (valueMarking(configuration) / (configuration.getK() + 1)) * (NUM_CENTERS - configuration.getK() + 1); //Average centers used
     }
 
