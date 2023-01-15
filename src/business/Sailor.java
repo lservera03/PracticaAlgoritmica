@@ -34,11 +34,11 @@ public class Sailor {
 
 
     private float normalize10(float number) {
-        return number / Float.parseFloat("10");
+        return (float) (number / 10.0);
     }
 
     private float normalize100(float number) {
-        return number / Float.parseFloat("100");
+        return (float) (number / 100.0);
     }
 
 
