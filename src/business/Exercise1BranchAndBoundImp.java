@@ -20,6 +20,8 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
 
     private boolean isMarking;
 
+    private int solutionsFound;
+
     @Override
     public void run(boolean marking) {
         ShipReader shipReader = new ShipReader();
@@ -32,31 +34,40 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
 
         this.isMarking = marking;
 
+        solutionsFound = 0;
+
         long start = System.nanoTime();
+
+        System.out.println("Loading...");
 
         Exercise1Configuration best = (Exercise1Configuration) BranchAndBound();
 
-        for (int i = 0; i < NUM_SHIPS; i++) {
+        long end = System.nanoTime();
+        long elapsedTime = (end - start) / 100000;
 
-            System.out.println("Boat " + (i + 1) + ": " + ships.get(i).getName());
+        if(best != null){
+            System.out.println("\nSolutions found: " + solutionsFound);
 
-            for (int j = 0; j < NUM_SAILORS; j++) {
+            System.out.println("\nBest solution: ");
+            for (int i = 0; i < NUM_SHIPS; i++) {
 
-                if (best.getPosition(j) == i) {
-                    System.out.println("\t Sailor " + sailors.get(j).getNum_membership() + " " + sailors.get(j).getName());
+                System.out.println("Boat " + (i + 1) + ": " + ships.get(i).getName());
+
+                for (int j = 0; j < NUM_SAILORS; j++) {
+
+                    if (best.getPosition(j) == i) {
+                        System.out.println("\t Sailor " + sailors.get(j).getNum_membership() + " " + sailors.get(j).getName());
+                    }
                 }
             }
+
+            System.out.println("\nTotal speed: " + value(best));
+
+            System.out.println("\nTime needed: " + elapsedTime + " miliseconds\n");
+        } else {
+            System.out.println("\nThere is not any solution!\n");
         }
 
-
-        long end = System.nanoTime();
-        long elapsedTime = end - start;
-
-        System.out.println("Time used: " + elapsedTime + " nanoseconds");
-
-        System.out.println("Best configuration: ");
-        System.out.println(Arrays.toString(best.getSailors()));
-        System.out.println("Maxima velocidad usada: " + value(best));
     }
 
 
@@ -85,7 +96,7 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
 
                     if (this.isMarking) {
                         if (markedFeasible(son)) {
-
+                            solutionsFound++;
                             if (markedValue(son) > bestTotalSpeed) {
                                 bestTotalSpeed = markedValue(son);
                                 bestConfiguration = new Exercise1Configuration((Exercise1Configuration) son, NUM_SAILORS);
@@ -96,7 +107,7 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
                         }
                     } else {
                         if (feasible(son)) {
-
+                            solutionsFound++;
                             if (value(son) > bestTotalSpeed) {
                                 bestTotalSpeed = value(son);
                                 bestConfiguration = new Exercise1Configuration((Exercise1Configuration) son, NUM_SAILORS);
@@ -287,9 +298,6 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
 
         Exercise1Configuration conf = (Exercise1Configuration) configuration;
 
-        System.out.println(Arrays.toString(conf.getSailors()));
-
-
         for (int i = 0; i < NUM_SHIPS; i++) {
 
             Ship ship = ships.get(i);
@@ -315,9 +323,6 @@ public class Exercise1BranchAndBoundImp extends BranchAndBound {
                 sailorsByShip.clear();
             }
         }
-
-        System.out.println("Total speed: " + totalSpeed);
-
 
         return totalSpeed;
     }

@@ -19,6 +19,8 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
     private double bestCentersUsed;
 
+    private int solutionsFound;
+
     @Override
     public void run(boolean marking) {
 
@@ -35,28 +37,35 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
         NUM_CENTERS = centers.size();
 
+        solutionsFound = 0;
+
         long start = System.nanoTime();
+
+        System.out.println("\nLoading...");
 
         Exercise2Configuration best = (Exercise2Configuration) BranchAndBound();
 
         long end = System.nanoTime();
         long elapsedTime = (end - start) / 100000;
 
-        System.out.println("Time used: " + elapsedTime + " miliseconds");
-
         if (best != null) {
-            System.out.println("Minimum centers used: " + (int) bestCentersUsed);
-            System.out.println("Centers: ");
+            System.out.println("\nSolutions found: " + solutionsFound);
+
+            System.out.println("\nBest solution: ");
+
             for (int i = 0; i < NUM_CENTERS; i++) {
                 if (best.getPosition(i) == 1) {
                     System.out.println(" - " + centers.get(i).getName());
                 }
             }
+
+            System.out.println("\nCenters needed: " + (int) bestCentersUsed);
+
+            System.out.println("\nTime used: " + elapsedTime + " miliseconds\n");
         } else {
-            System.out.println("There is not any solution!");
+            System.out.println("\nThere is not any solution!\n");
         }
 
-        System.out.println();
     }
 
 
@@ -83,7 +92,7 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
 
                     if (this.isMarking) {
                         if (feasibleMarking(son)) {
-
+                            solutionsFound++;
                             if (valueMarking(son) < bestCentersUsed) {
                                 bestCentersUsed = valueMarking(son);
                                 bestConfiguration = new Exercise2Configuration((Exercise2Configuration) son, NUM_CENTERS);
@@ -94,7 +103,7 @@ public class Exercise2BranchAndBoundImp extends BranchAndBound {
                         }
                     } else {
                         if (feasible(son)) {
-
+                            solutionsFound++;
                             if (value(son) < bestCentersUsed) {
                                 bestCentersUsed = value(son);
                                 bestConfiguration = new Exercise2Configuration((Exercise2Configuration) son, NUM_CENTERS);

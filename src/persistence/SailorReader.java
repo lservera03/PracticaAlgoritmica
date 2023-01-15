@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 public class SailorReader {
 
-    private static final String SAILOR_ROUTE = "datasets/sailors/sailorsS.txt";
+    private static final String SAILOR_ROUTE = "datasets/sailors/sailorsL.txt";
 
     public ArrayList<Sailor> readAllSailors(){
         String currentLine;

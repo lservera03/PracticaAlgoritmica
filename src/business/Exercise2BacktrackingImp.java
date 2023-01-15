@@ -22,6 +22,8 @@ public class Exercise2BacktrackingImp extends Backtracking {
     private boolean isUsingMarking;
     private boolean isUsingPbmsc;
 
+    private int solutionsFound;
+
     @Override
     public void run(boolean marking, boolean pbmsc) {
 
@@ -45,9 +47,12 @@ public class Exercise2BacktrackingImp extends Backtracking {
         int[] x = new int[NUM_CENTERS];
         int k = 0;
 
+        solutionsFound = 0;
+
         //start execution watch
         long start = System.nanoTime();
 
+        System.out.println("\nLoading...");
 
         if (marking) {
             Exercise2BacktrackingMarking m = new Exercise2BacktrackingMarking();
@@ -72,22 +77,23 @@ public class Exercise2BacktrackingImp extends Backtracking {
         long end = System.nanoTime();
         long elapsedTime = (end - start) / 100000;
 
-        System.out.println("Execution time: " + elapsedTime + " miliseconds");
+        if (bestConfig != null) {
+            System.out.println("\nSolutions found: " + solutionsFound);
 
-        if(bestConfig != null){
-            //show best solution pretty
-            System.out.println("Minimum centers used: " + bestCentersUsed);
-            System.out.println("Centers: ");
-            for(int i = 0; i < NUM_CENTERS; i++){
-                if(bestConfig[i] == 1){
+            System.out.println("\nBest solution: ");
+            for (int i = 0; i < NUM_CENTERS; i++) {
+                if (bestConfig[i] == 1) {
                     System.out.println(" - " + centers.get(i).getName());
                 }
             }
+
+            System.out.println("\nCenters needed: " + bestCentersUsed);
+
+            System.out.println("\nExecution time: " + elapsedTime + " miliseconds\n");
         } else {
-            System.out.println("There is not any solution!");
+            System.out.println("\nThere is not any solution!\n");
         }
 
-        System.out.println();
     }
 
     public void backtracking(int[] x, int k, Exercise2BacktrackingMarking m) {
@@ -105,6 +111,7 @@ public class Exercise2BacktrackingImp extends Backtracking {
                 if (this.isUsingMarking) { //MARKING
 
                     if (markedFeasible(x, m)) {
+                        solutionsFound++;
                         markedTreatSolution(x, m);
                     } else {
                         //INCORRECT SOLUTION
@@ -112,8 +119,8 @@ public class Exercise2BacktrackingImp extends Backtracking {
 
                 } else {
                     if (feasible(x)) {
+                        solutionsFound++;
                         treatSolution(x);
-
                     } else {
                         //INCORRECT SOLUTION
                     }

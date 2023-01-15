@@ -22,6 +22,8 @@ public class Exercise1BacktrackingImp extends Backtracking {
 
     private double previousSpeed;
 
+    private int solutionsFound;
+
     @Override
     public void run(boolean marking, boolean pbmsc) {
 
@@ -42,8 +44,11 @@ public class Exercise1BacktrackingImp extends Backtracking {
         int k = 0;
 
         bestTotalSpeed = 0;
+        solutionsFound = 0;
 
         long start = System.nanoTime();
+
+        System.out.println("Loading...");
 
         if (this.isUsingMarking) {
             Exercise1BacktrackingMarking markingObject = new Exercise1BacktrackingMarking(NUM_SHIPS);
@@ -53,31 +58,32 @@ public class Exercise1BacktrackingImp extends Backtracking {
             backtracking(x, k, null);
         }
 
+        long end = System.nanoTime();
+        long elapsedTime = (end - start) / 100000;
 
-        System.out.println("Best solution speed: ");
-        System.out.println(bestTotalSpeed);
+        if (bestConfig != null) {
+            System.out.println("\nSolutions found: " + solutionsFound);
 
-        System.out.println("Best config: ");
-        System.out.println(Arrays.toString(bestConfig));
+            System.out.println("\nBest solution: ");
 
-        // TODO print pretty
+            for (int i = 0; i < NUM_SHIPS; i++) {
 
-        for (int i = 0; i < NUM_SHIPS; i++) {
+                System.out.println("Boat " + (i + 1) + ": " + ships.get(i).getName());
 
-            System.out.println("Boat " + (i + 1) + ": " + ships.get(i).getName());
+                for (int j = 0; j < NUM_SAILORS; j++) {
 
-            for (int j = 0; j < NUM_SAILORS; j++) {
-
-                if (bestConfig[j] == i) {
-                    System.out.println("\t Sailor " + sailors.get(j).getNum_membership() + " " + sailors.get(j).getName());
+                    if (bestConfig[j] == i) {
+                        System.out.println("\t Sailor " + sailors.get(j).getNum_membership() + " " + sailors.get(j).getName());
+                    }
                 }
             }
+
+            System.out.println("\nTotal speed: " + bestTotalSpeed);
+
+            System.out.println("\nTime needed: " + elapsedTime + " miliseconds\n");
+        } else {
+            System.out.println("\nThere is not any solution\n");
         }
-
-        long end = System.nanoTime();
-        long elapsedTime = end - start;
-
-        System.out.println("Time used: " + elapsedTime + " nanoseconds");
 
     }
 
@@ -94,17 +100,13 @@ public class Exercise1BacktrackingImp extends Backtracking {
                 mark(x, k, m);
             }
 
-            System.out.println(Arrays.toString(x));
-
             if (solution(x, k)) {
 
-                System.out.println(Arrays.toString(x));
 
                 if (this.isUsingMarking) {
 
                     if (markedFeasible(x, m)) {
-                        System.out.println("SOLUCION: ");
-                        System.out.println(Arrays.toString(x));
+                        solutionsFound++;
 
                         markedTreatSolution(x, m);
                     } else {
@@ -113,8 +115,7 @@ public class Exercise1BacktrackingImp extends Backtracking {
 
                 } else {
                     if (feasible(x)) {
-                        System.out.println("SOLUCION: ");
-                        System.out.println(Arrays.toString(x));
+                        solutionsFound++;
 
                         treatSolution(x);
                     } else {
@@ -154,7 +155,6 @@ public class Exercise1BacktrackingImp extends Backtracking {
         }
 
     }
-
 
 
     private void mark(int[] x, int k, Exercise1BacktrackingMarking m) {
@@ -197,18 +197,17 @@ public class Exercise1BacktrackingImp extends Backtracking {
     }
 
 
-
     private void unmark(int[] x, int k, Exercise1BacktrackingMarking m) {
         boolean lleno = false;
 
         if (x[k] != -1) {
             m.sailorsByShip[x[k]].sailors = m.sailorsByShip[x[k]].sailors - 1;
-            if(m.sailorsByShip[x[k]].isFull){
+            if (m.sailorsByShip[x[k]].isFull) {
                 lleno = true;
             }
-            if(m.sailorsByShip[x[k]].sailors < ships.get(x[k]).getCapacity()){
+            if (m.sailorsByShip[x[k]].sailors < ships.get(x[k]).getCapacity()) {
                 m.sailorsByShip[x[k]].isFull = false;
-                if(lleno){
+                if (lleno) {
                     m.fullBoats--;
                 }
             }
@@ -321,8 +320,6 @@ public class Exercise1BacktrackingImp extends Backtracking {
             sailorsByShip.clear();
         }
 
-        System.out.println("Total speed: " + totalSpeed);
-
         if (totalSpeed > bestTotalSpeed) {
             bestTotalSpeed = totalSpeed;
             bestConfig = Arrays.copyOf(x, NUM_SAILORS);
@@ -331,8 +328,6 @@ public class Exercise1BacktrackingImp extends Backtracking {
     }
 
     private void markedTreatSolution(int[] x, Exercise1BacktrackingMarking m) {
-        System.out.println("CONFIG SPEED: ");
-        System.out.println(m.totalSpeed);
 
         if (m.totalSpeed > bestTotalSpeed) {
             bestTotalSpeed = m.totalSpeed;
